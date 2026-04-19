@@ -32,6 +32,9 @@
 //! `lib.rs`.  Every module declares itself emergent in
 //! `module_emergence_lite.rs`.  Zero `.unwrap()` outside tests.
 
+pub mod health;
 pub mod installer;
+pub mod ledger;
 pub mod marketplace;
+pub mod runner;
 pub mod types;
