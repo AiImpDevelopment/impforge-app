@@ -12,6 +12,7 @@ pub mod hyperchat_lite;
 pub mod knowledge_lite;
 pub mod memory_lite;
 pub mod slash_commands;
+pub mod wikipedia_fetch;
 
 use error::AppResult;
 
@@ -60,6 +61,8 @@ pub fn run() {
             browser_import_oneshot::browser_import_history,
             document_parse::document_detect_format,
             document_parse::document_extract_text,
+            wikipedia_fetch::wikipedia_search,
+            wikipedia_fetch::wikipedia_fetch_article,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
