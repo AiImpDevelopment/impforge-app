@@ -63,6 +63,13 @@ pub fn marketplace_db_path() -> AppResult<PathBuf> {
 /// when they swap `IMPFORGE_APP_HOME`.
 pub(crate) static MARKETPLACE_CONN: Mutex<Option<Connection>> = Mutex::new(None);
 
+/// Module-wide lock guarding the `IMPFORGE_APP_HOME` env var across
+/// every mcp:: test.  Tests share process state, so without this lock
+/// they race when run in parallel and produce flaky failures.  Held
+/// for the lifetime of one test by the `HomeGuard` helpers.
+#[cfg(test)]
+pub(crate) static TEST_ENV_LOCK: Mutex<()> = Mutex::new(());
+
 /// Open (or reuse) the marketplace connection.  Idempotent.
 pub fn open_db() -> AppResult<()> {
     let mut guard = MARKETPLACE_CONN
@@ -583,14 +590,20 @@ mod tests {
     struct HomeGuard {
         _tmp: TempDir,
         prev: Option<String>,
+        _env_lock: std::sync::MutexGuard<'static, ()>,
     }
 
     fn set_home() -> HomeGuard {
+        let lock = TEST_ENV_LOCK.lock().unwrap_or_else(|p| p.into_inner());
         let tmp = tempfile::tempdir().expect("tempdir");
         let prev = std::env::var("IMPFORGE_APP_HOME").ok();
         std::env::set_var("IMPFORGE_APP_HOME", tmp.path());
         reset_conn();
-        HomeGuard { _tmp: tmp, prev }
+        HomeGuard {
+            _tmp: tmp,
+            prev,
+            _env_lock: lock,
+        }
     }
 
     impl Drop for HomeGuard {

@@ -422,16 +422,24 @@ mod tests {
     struct HomeGuard {
         _tmp: TempDir,
         prev: Option<String>,
+        _env_lock: std::sync::MutexGuard<'static, ()>,
     }
 
     fn set_home() -> HomeGuard {
+        let lock = marketplace::TEST_ENV_LOCK
+            .lock()
+            .unwrap_or_else(|p| p.into_inner());
         let tmp = tempfile::tempdir().expect("tempdir");
         let prev = std::env::var("IMPFORGE_APP_HOME").ok();
         std::env::set_var("IMPFORGE_APP_HOME", tmp.path());
         let mut g = marketplace::MARKETPLACE_CONN.lock().expect("lock");
         *g = None;
         reset_for_tests();
-        HomeGuard { _tmp: tmp, prev }
+        HomeGuard {
+            _tmp: tmp,
+            prev,
+            _env_lock: lock,
+        }
     }
 
     impl Drop for HomeGuard {
