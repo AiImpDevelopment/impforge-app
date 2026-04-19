@@ -34,6 +34,7 @@
 
 pub mod bundle;
 pub mod capability_diff;
+pub mod commands;
 pub mod health;
 pub mod installer;
 pub mod ledger;
