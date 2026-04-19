@@ -1,0 +1,49 @@
+# SPDX-License-Identifier: MIT
+name: crown-jewel
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  guardian:
+    name: Crown-Jewel Guardian (Dim 1-9)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - name: Checkout impforge-cli
+        uses: actions/checkout@v4
+        with:
+          repository: AiImpDevelopment/impforge-cli
+          path: ../impforge-cli
+
+      - uses: dtolnay/rust-toolchain@1.95.0
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Dim 1-5+8 — cargo check + clippy zero warnings
+        run: |
+          cargo check --all-targets --workspace --locked 2>&1 | tee cj.log
+          if grep -qE 'warning:|error:' cj.log; then
+            echo "::error::Crown-Jewel Dim 1-5+8: cargo check has warnings or errors"
+            exit 1
+          fi
+          cargo clippy --all-targets --workspace --locked -- -D warnings
+
+      - name: Dim 9 — no Pro-source leak
+        run: ./scripts/cj-dim9-no-pro-leak.sh
+
+      - name: SPDX MIT header check
+        run: ./scripts/check-spdx.sh
+
+      - name: Install cargo-deny + cargo-audit
+        run: cargo install cargo-deny cargo-audit --locked
+
+      - name: cargo deny check
+        run: cargo deny check
+
+      - name: cargo audit
+        run: cargo audit
