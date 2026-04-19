@@ -7,6 +7,7 @@ pub mod auto_digest_lite;
 pub mod browser_import_oneshot;
 pub mod chat_lite;
 pub mod chat_session_memory;
+pub mod crypto_lite;
 pub mod digu_privacy_full;
 pub mod document_parse;
 pub mod eu_ai_act_full;
@@ -78,6 +79,9 @@ pub fn run() {
             pii_scrubber::pii_scrub,
             injection_firewall::injection_scan,
             injection_firewall::injection_sanitize,
+            crypto_lite::crypto_encrypt,
+            crypto_lite::crypto_decrypt,
+            crypto_lite::crypto_derive_key,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
