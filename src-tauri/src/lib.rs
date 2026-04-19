@@ -21,6 +21,7 @@ pub mod module_emergence_lite;
 pub mod pii_scrubber;
 pub mod slash_commands;
 pub mod universal_lite;
+pub mod upgrade_nudge;
 pub mod widgets_lite;
 pub mod wikipedia_fetch;
 
@@ -104,6 +105,9 @@ pub fn run() {
             feature_flags::feature_flag_set,
             feature_flags::feature_flag_stats,
             feature_flags::feature_flag_reset_defaults,
+            upgrade_nudge::nudge_evaluate,
+            upgrade_nudge::nudge_dismiss,
+            upgrade_nudge::nudge_global_disable,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
