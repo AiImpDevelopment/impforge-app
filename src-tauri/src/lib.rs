@@ -150,15 +150,15 @@ pub fn run() {
             // ║ RAG, memory, auto-digest, document parse                  ║
             // ╚═══════════════════════════════════════════════════════════╝
             // Knowledge (RAG: ingest + search + cite)
-            knowledge_lite::knowledge_insert,
-            knowledge_lite::knowledge_search,
-            knowledge_lite::knowledge_count,
-            knowledge_lite::knowledge_ingest_path,
-            knowledge_lite::knowledge_ingest_dir,
-            knowledge_lite::knowledge_delete_doc,
-            knowledge_lite::knowledge_get_citation,
-            knowledge_lite::knowledge_stats,
-            knowledge_lite::knowledge_pro_teaser_count,
+            knowledge_lite::commands::knowledge_insert,
+            knowledge_lite::commands::knowledge_search,
+            knowledge_lite::commands::knowledge_count,
+            knowledge_lite::commands::knowledge_ingest_path,
+            knowledge_lite::commands::knowledge_ingest_dir,
+            knowledge_lite::commands::knowledge_delete_doc,
+            knowledge_lite::commands::knowledge_get_citation,
+            knowledge_lite::commands::knowledge_stats,
+            knowledge_lite::commands::knowledge_pro_teaser_count,
             // Memory (transient session memory)
             memory_lite::memory_store,
             memory_lite::memory_search,
