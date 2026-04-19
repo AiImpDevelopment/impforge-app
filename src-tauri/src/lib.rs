@@ -12,6 +12,7 @@ pub mod crypto_lite;
 pub mod digu_privacy_full;
 pub mod document_parse;
 pub mod eu_ai_act_full;
+pub mod feature_flags;
 pub mod hyperchat_lite;
 pub mod injection_firewall;
 pub mod knowledge_lite;
@@ -99,6 +100,10 @@ pub fn run() {
             universal_lite::universal_register_tool,
             universal_lite::universal_list_tools,
             universal_lite::universal_invoke,
+            feature_flags::feature_flag_list,
+            feature_flags::feature_flag_set,
+            feature_flags::feature_flag_stats,
+            feature_flags::feature_flag_reset_defaults,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
