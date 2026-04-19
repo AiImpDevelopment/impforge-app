@@ -4,6 +4,7 @@
 pub mod error;
 
 pub mod chat_lite;
+pub mod chat_session_memory;
 
 use error::AppResult;
 
@@ -24,7 +25,14 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_store::Builder::default().build())
         .plugin(tauri_plugin_updater::Builder::default().build())
-        .invoke_handler(tauri::generate_handler![ping, chat_lite::chat_stream])
+        .invoke_handler(tauri::generate_handler![
+            ping,
+            chat_lite::chat_stream,
+            chat_session_memory::session_create_thread,
+            chat_session_memory::session_append_message,
+            chat_session_memory::session_list_threads,
+            chat_session_memory::session_get_messages,
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
