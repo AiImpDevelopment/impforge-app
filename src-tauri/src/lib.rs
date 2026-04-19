@@ -21,6 +21,7 @@ pub mod hyperchat_lite;
 pub mod injection_firewall;
 pub mod keys;
 pub mod knowledge_lite;
+pub mod mcp;
 pub mod memory_lite;
 pub mod module_emergence_lite;
 pub mod pii_scrubber;
