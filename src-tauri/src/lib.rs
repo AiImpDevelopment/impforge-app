@@ -16,6 +16,7 @@ pub mod hyperchat_lite;
 pub mod injection_firewall;
 pub mod knowledge_lite;
 pub mod memory_lite;
+pub mod module_emergence_lite;
 pub mod pii_scrubber;
 pub mod slash_commands;
 pub mod wikipedia_fetch;
@@ -85,6 +86,9 @@ pub fn run() {
             crypto_lite::crypto_derive_key,
             cortex_lite::cortex_invoke_tool,
             cortex_lite::cortex_publish_event,
+            module_emergence_lite::emergence_register,
+            module_emergence_lite::emergence_ask,
+            module_emergence_lite::emergence_has_capability,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
