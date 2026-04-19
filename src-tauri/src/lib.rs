@@ -3,6 +3,7 @@
 
 pub mod error;
 
+pub mod auto_digest_lite;
 pub mod chat_lite;
 pub mod chat_session_memory;
 pub mod hyperchat_lite;
@@ -47,6 +48,11 @@ pub fn run() {
             memory_lite::memory_store,
             memory_lite::memory_search,
             memory_lite::memory_recall_recent,
+            auto_digest_lite::digest_add_source,
+            auto_digest_lite::digest_remove_source,
+            auto_digest_lite::digest_list_sources,
+            auto_digest_lite::digest_run_once,
+            auto_digest_lite::digest_history,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
