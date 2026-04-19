@@ -7,6 +7,7 @@ pub mod auto_digest_lite;
 pub mod browser_import_oneshot;
 pub mod chat_lite;
 pub mod chat_session_memory;
+pub mod digu_privacy_full;
 pub mod document_parse;
 pub mod hyperchat_lite;
 pub mod knowledge_lite;
@@ -63,6 +64,10 @@ pub fn run() {
             document_parse::document_extract_text,
             wikipedia_fetch::wikipedia_search,
             wikipedia_fetch::wikipedia_fetch_article,
+            digu_privacy_full::privacy_get_tier,
+            digu_privacy_full::privacy_set_tier,
+            digu_privacy_full::privacy_get_policy,
+            digu_privacy_full::privacy_check_operation,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
