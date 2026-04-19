@@ -67,7 +67,22 @@ walkdir = { workspace = true }
 base64 = "0.22"
 dirs = "5"
 image = { version = "0.25", default-features = false, features = ["png"] }
+regex = "1"
+once_cell = "1"
+
+# Global Digest — Feature 3 (Tier 2).  See workspace.dependencies for
+# rationale.  `arboard` carries clipboard support for the OPT-IN
+# clipboard digest source; disabled by default per the Recall lesson.
+notify = { workspace = true }
+notify-debouncer-full = { workspace = true }
+arboard = { workspace = true }
+feed-rs = { workspace = true }
+url = { workspace = true }
+
+# tempfile = WAL-copy of locked browser SQLite DBs (Firefox / Chrome).
+# Used by `browser_import_oneshot::open_locked_sqlite`.  Must be in
+# main deps (not dev-deps) because it's compiled into production code.
+tempfile = "3"
 
 [dev-dependencies]
 tokio-test = "0.4"
-tempfile = "3"

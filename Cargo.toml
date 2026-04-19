@@ -63,6 +63,16 @@ whatlang = "0.18"
 sha2 = "0.10"
 walkdir = "2"
 
+# Global Digest — Feature 3 (Tier 2).  All MIT-compatible.
+# Same rationale as in the CLI workspace; see crates/impforge-cli/Cargo.toml
+# (workspace.dependencies) for full notes on each crate.  Tier 2 adds
+# `arboard` for opt-in clipboard ingest.
+notify = "8"
+notify-debouncer-full = "0.7"
+arboard = "3"
+feed-rs = "2"
+url = "2"
+
 # Tauri 2.x — versions checked against crates.io 2026-04-19
 # NOTE: api-all feature was Tauri 1; Tauri 2 splits into per-API capabilities (opt-in later)
 tauri = { version = "2", features = [] }

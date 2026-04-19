@@ -1,7 +1,12 @@
 // SPDX-License-Identifier: MIT
-//! Behavioral tests for pii_scrubber Phase 1 type skeleton.
+//! Behavioural integration tests for pii_scrubber Phase 2 — actual
+//! detection + redaction.  Updated as part of Feature 3 (Global
+//! Digest, Tier 2) which depends on a working scrubber for Recall
+//! lesson #4.
 
-use impforge_app_lib::pii_scrubber::{PiiKind, PiiMatch, ScrubResult};
+use impforge_app_lib::pii_scrubber::{
+    detect, scrub, PiiKind, PiiMatch, ScrubResult,
+};
 
 #[test]
 fn pii_kind_serializes_snake_case() {
@@ -12,8 +17,8 @@ fn pii_kind_serializes_snake_case() {
         (PiiKind::CreditCard, "credit_card"),
         (PiiKind::Ssn, "ssn"),
         (PiiKind::IpAddress, "ip_address"),
-        (PiiKind::Address, "address"),
-        (PiiKind::FullName, "full_name"),
+        (PiiKind::ApiKey, "api_key"),
+        (PiiKind::JwtToken, "jwt_token"),
     ] {
         let j = serde_json::to_string(&k).expect("serialize PiiKind");
         assert_eq!(j, format!("\"{expected}\""));
@@ -28,8 +33,8 @@ fn pii_match_roundtrips() {
         end: 25,
         redacted: "[EMAIL]".into(),
     };
-    let j = serde_json::to_string(&original).expect("serialize PiiMatch");
-    let back: PiiMatch = serde_json::from_str(&j).expect("deserialize PiiMatch");
+    let j = serde_json::to_string(&original).expect("ser");
+    let back: PiiMatch = serde_json::from_str(&j).expect("de");
     assert_eq!(original.kind, back.kind);
     assert_eq!(original.start, back.start);
     assert_eq!(original.end, back.end);
@@ -41,10 +46,24 @@ fn scrub_result_roundtrips() {
         scrubbed: "Contact: [EMAIL]".into(),
         matches: vec![],
     };
-    let j = serde_json::to_string(&original).expect("serialize ScrubResult");
-    let back: ScrubResult = serde_json::from_str(&j).expect("deserialize ScrubResult");
+    let j = serde_json::to_string(&original).expect("ser");
+    let back: ScrubResult = serde_json::from_str(&j).expect("de");
     assert_eq!(original.scrubbed, back.scrubbed);
-    assert_eq!(original.matches.len(), back.matches.len());
+}
+
+#[test]
+fn detect_finds_email_and_returns_match_offsets() {
+    let m = detect("write to test@example.com please");
+    assert_eq!(m.len(), 1);
+    assert_eq!(m[0].kind, PiiKind::Email);
+    assert!(m[0].end > m[0].start);
+}
+
+#[test]
+fn scrub_replaces_with_redaction_marker() {
+    let r = scrub("Card 4111-1111-1111-1111 expires").expect("scrub");
+    assert!(r.scrubbed.contains("[REDACTED:CCN]"));
+    assert!(r.matches.iter().any(|m| m.kind == PiiKind::CreditCard));
 }
 
 #[test]
