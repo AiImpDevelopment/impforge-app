@@ -7,6 +7,7 @@ pub mod auto_digest_lite;
 pub mod browser_import_oneshot;
 pub mod chat_lite;
 pub mod chat_session_memory;
+pub mod cortex_lite;
 pub mod crypto_lite;
 pub mod digu_privacy_full;
 pub mod document_parse;
@@ -82,6 +83,8 @@ pub fn run() {
             crypto_lite::crypto_encrypt,
             crypto_lite::crypto_decrypt,
             crypto_lite::crypto_derive_key,
+            cortex_lite::cortex_invoke_tool,
+            cortex_lite::cortex_publish_event,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
