@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
-//! Behavioral tests for slash_commands Phase 1 type skeleton.
+//! Behavioral tests for slash_commands Phase 2 implementation.
+//! Type-roundtrip tests stay; new tests exercise catalog + dispatch.
 
-use impforge_app_lib::slash_commands::{SlashCommand, SlashOutcome};
+use impforge_app_lib::slash_commands::{catalog, dispatch, SlashCommand, SlashOutcome};
 
 #[test]
 fn slash_command_roundtrips_through_json() {
@@ -55,4 +56,78 @@ fn types_implement_required_traits() {
     }
     assert_traits::<SlashCommand>();
     assert_traits::<SlashOutcome>();
+}
+
+#[test]
+fn catalog_has_at_least_50_commands() {
+    let cmds = catalog();
+    assert!(cmds.len() >= 50, "want >=50, got {}", cmds.len());
+}
+
+#[test]
+fn catalog_covers_required_categories() {
+    let cmds = catalog();
+    for required in [
+        "chat",
+        "knowledge",
+        "system",
+        "privacy",
+        "files",
+        "pro",
+        "digiimp",
+        "auto-digest",
+        "format",
+        "browser",
+        "mcp",
+        "widgets",
+        "quality",
+        "settings",
+        "fun",
+        "ai",
+    ] {
+        assert!(
+            cmds.iter().any(|c| c.category == required),
+            "missing category: {required}"
+        );
+    }
+}
+
+#[test]
+fn catalog_command_names_are_unique() {
+    let cmds = catalog();
+    let mut names: Vec<&str> = cmds.iter().map(|c| c.name.as_str()).collect();
+    let total = names.len();
+    names.sort();
+    names.dedup();
+    assert_eq!(names.len(), total, "duplicate command name detected");
+}
+
+#[test]
+fn slash_help_returns_help() {
+    let result = dispatch("/help".into(), None);
+    match result {
+        SlashOutcome::Text { text } => {
+            assert!(text.contains("Available commands"));
+            assert!(text.contains("/help"));
+        }
+        other => panic!("expected Text outcome, got {other:?}"),
+    }
+}
+
+#[test]
+fn unknown_slash_returns_unknown() {
+    let result = dispatch("/notarealcommand".into(), None);
+    assert!(matches!(result, SlashOutcome::Unknown { .. }));
+}
+
+#[test]
+fn slash_search_with_arg_returns_search_intent() {
+    let result = dispatch("/search rust".into(), None);
+    match result {
+        SlashOutcome::Intent { name, arg } => {
+            assert_eq!(name, "/search");
+            assert_eq!(arg.as_deref(), Some("rust"));
+        }
+        other => panic!("expected Intent outcome, got {other:?}"),
+    }
 }
