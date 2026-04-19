@@ -79,6 +79,14 @@ arboard = { workspace = true }
 feed-rs = { workspace = true }
 url = { workspace = true }
 
+# MCP Plugin UI — Feature 4 (Tier 2).
+# - oauth2 = PKCE flow for OAuth-required MCP servers (GitHub, Slack)
+# - landlock = Linux 5.13+ filesystem capability gate (best-effort)
+# - seccompiler = Linux seccomp-BPF policy compiler (best-effort)
+oauth2 = { workspace = true }
+landlock = { workspace = true }
+seccompiler = { workspace = true }
+
 # tempfile = WAL-copy of locked browser SQLite DBs (Firefox / Chrome).
 # Used by `browser_import_oneshot::open_locked_sqlite`.  Must be in
 # main deps (not dev-deps) because it's compiled into production code.

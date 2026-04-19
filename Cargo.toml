@@ -73,6 +73,17 @@ arboard = "3"
 feed-rs = "2"
 url = "2"
 
+# MCP Plugin UI — Feature 4 (Tier 2).  All MIT-compatible.
+# - `oauth2` 5 = canonical PKCE + loopback redirect client.  We use the
+#   sync API (`reqwest` blocking is already a dep via marketplace sync).
+# - `landlock` 0.4 = Linux 5.13+ filesystem capability gate.  No-op on
+#   non-Linux platforms (handled in code).
+# - `seccompiler` 0.5 = compile a seccomp BPF policy at runtime to lock
+#   per-server allowed syscalls.  Linux-only.
+oauth2 = "5"
+landlock = "0.4"
+seccompiler = "0.5"
+
 # Tauri 2.x — versions checked against crates.io 2026-04-19
 # NOTE: api-all feature was Tauri 1; Tauri 2 splits into per-API capabilities (opt-in later)
 tauri = { version = "2", features = [] }
