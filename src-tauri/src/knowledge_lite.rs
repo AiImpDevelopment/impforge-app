@@ -768,6 +768,18 @@ pub async fn knowledge_ingest_path(path: String) -> AppResult<IngestOutcome> {
     with_conn(|conn| ingest_one(conn, &p, parse))
 }
 
+/// Synchronous (blocking) ingest helper — used by Feature 3's
+/// `auto_digest_lite` so the watcher / RSS daemon can ingest without
+/// requiring a tokio runtime.  Same body as `knowledge_ingest_path`
+/// minus the `tauri::command` machinery.
+pub fn ingest_path_blocking(path: &Path) -> AppResult<IngestOutcome> {
+    if !path.exists() {
+        return Err(AppError::NotFound(path.display().to_string()));
+    }
+    let parse = parse_file(path)?;
+    with_conn(|conn| ingest_one(conn, path, parse))
+}
+
 /// Walk a directory and ingest every supported file.  When `recursive`
 /// is false, only the top-level directory entries are visited.
 #[tauri::command]
