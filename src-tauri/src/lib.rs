@@ -5,6 +5,7 @@ pub mod error;
 
 pub mod chat_lite;
 pub mod chat_session_memory;
+pub mod hyperchat_lite;
 pub mod slash_commands;
 
 use error::AppResult;
@@ -35,6 +36,9 @@ pub fn run() {
             chat_session_memory::session_get_messages,
             slash_commands::slash_catalog,
             slash_commands::slash_dispatch,
+            hyperchat_lite::hyperchat_mode_transition,
+            hyperchat_lite::hyperchat_event_stats,
+            hyperchat_lite::hyperchat_session_new,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
