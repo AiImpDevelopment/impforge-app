@@ -9,6 +9,7 @@ pub mod chat_lite;
 pub mod chat_session_memory;
 pub mod cortex_lite;
 pub mod crypto_lite;
+pub mod digiimp_bridge;
 pub mod digu_privacy_full;
 pub mod document_parse;
 pub mod eu_ai_act_full;
@@ -108,6 +109,14 @@ pub fn run() {
             upgrade_nudge::nudge_evaluate,
             upgrade_nudge::nudge_dismiss,
             upgrade_nudge::nudge_global_disable,
+            digiimp_bridge::digiimp_set_state,
+            digiimp_bridge::digiimp_set_energy,
+            digiimp_bridge::digiimp_set_glow,
+            digiimp_bridge::digiimp_set_color_preset,
+            digiimp_bridge::digiimp_set_display_mode,
+            digiimp_bridge::digiimp_get_state,
+            digiimp_bridge::digiimp_rest_mode,
+            digiimp_bridge::digiimp_wake,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
