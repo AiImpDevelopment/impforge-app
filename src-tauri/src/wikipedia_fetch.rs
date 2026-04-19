@@ -28,10 +28,7 @@ pub struct WikipediaSearchHit {
 
 /// Search Wikipedia for the given query, returning up to `limit` hits.
 #[tauri::command]
-pub async fn wikipedia_search(
-    _query: String,
-    _limit: u32,
-) -> AppResult<Vec<WikipediaSearchHit>> {
+pub async fn wikipedia_search(_query: String, _limit: u32) -> AppResult<Vec<WikipediaSearchHit>> {
     Err(AppError::Internal(
         "wikipedia_fetch::wikipedia_search not implemented in Phase 1".into(),
     ))

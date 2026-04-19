@@ -10,7 +10,10 @@ fn digest_source_rss_serializes_with_kind_tag() {
     };
     let j = serde_json::to_string(&v).expect("serialize DigestSource::Rss");
     assert!(j.contains("\"kind\":\"rss\""), "got: {j}");
-    assert!(j.contains("\"url\":\"https://example.com/feed\""), "got: {j}");
+    assert!(
+        j.contains("\"url\":\"https://example.com/feed\""),
+        "got: {j}"
+    );
 }
 
 #[test]
@@ -53,8 +56,9 @@ fn digest_entry_roundtrips_through_json() {
 
 #[test]
 fn types_implement_required_traits() {
-    fn assert_traits<T: Clone + std::fmt::Debug + serde::Serialize + for<'de> serde::Deserialize<'de>>()
-    {
+    fn assert_traits<
+        T: Clone + std::fmt::Debug + serde::Serialize + for<'de> serde::Deserialize<'de>,
+    >() {
     }
     assert_traits::<DigestSource>();
     assert_traits::<DigestEntry>();

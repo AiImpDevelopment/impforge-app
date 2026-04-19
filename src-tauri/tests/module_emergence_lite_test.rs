@@ -34,8 +34,7 @@ fn emergence_context_roundtrips() {
         }],
     };
     let j = serde_json::to_string(&original).expect("serialize EmergenceContext");
-    let back: EmergenceContext =
-        serde_json::from_str(&j).expect("deserialize EmergenceContext");
+    let back: EmergenceContext = serde_json::from_str(&j).expect("deserialize EmergenceContext");
     assert_eq!(original.module.0, back.module.0);
     assert_eq!(original.capabilities.len(), back.capabilities.len());
 }
@@ -66,8 +65,9 @@ fn ipc_response_roundtrips() {
 
 #[test]
 fn types_implement_required_traits() {
-    fn assert_traits<T: Clone + std::fmt::Debug + serde::Serialize + for<'de> serde::Deserialize<'de>>()
-    {
+    fn assert_traits<
+        T: Clone + std::fmt::Debug + serde::Serialize + for<'de> serde::Deserialize<'de>,
+    >() {
     }
     assert_traits::<ModuleId>();
     assert_traits::<Capability>();

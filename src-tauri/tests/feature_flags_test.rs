@@ -42,8 +42,7 @@ fn feature_flag_stats_roundtrips() {
         disabled: 17,
     };
     let j = serde_json::to_string(&original).expect("serialize FeatureFlagStats");
-    let back: FeatureFlagStats =
-        serde_json::from_str(&j).expect("deserialize FeatureFlagStats");
+    let back: FeatureFlagStats = serde_json::from_str(&j).expect("deserialize FeatureFlagStats");
     assert_eq!(original.total, back.total);
     assert_eq!(original.enabled, back.enabled);
     assert_eq!(original.disabled, back.disabled);
@@ -51,8 +50,9 @@ fn feature_flag_stats_roundtrips() {
 
 #[test]
 fn types_implement_required_traits() {
-    fn assert_traits<T: Clone + std::fmt::Debug + serde::Serialize + for<'de> serde::Deserialize<'de>>()
-    {
+    fn assert_traits<
+        T: Clone + std::fmt::Debug + serde::Serialize + for<'de> serde::Deserialize<'de>,
+    >() {
     }
     assert_traits::<FeatureCategory>();
     assert_traits::<FeatureFlag>();

@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: MIT
 //! Behavioral tests for universal_lite Phase 1 type skeleton.
 
-use impforge_app_lib::universal_lite::{
-    ConsumerProtocol, ToolInvocation, ToolOutput, ToolSchema,
-};
+use impforge_app_lib::universal_lite::{ConsumerProtocol, ToolInvocation, ToolOutput, ToolSchema};
 
 #[test]
 fn consumer_protocol_serializes_snake_case() {
@@ -57,8 +55,9 @@ fn tool_output_roundtrips() {
 
 #[test]
 fn types_implement_required_traits() {
-    fn assert_traits<T: Clone + std::fmt::Debug + serde::Serialize + for<'de> serde::Deserialize<'de>>()
-    {
+    fn assert_traits<
+        T: Clone + std::fmt::Debug + serde::Serialize + for<'de> serde::Deserialize<'de>,
+    >() {
     }
     assert_traits::<ConsumerProtocol>();
     assert_traits::<ToolSchema>();

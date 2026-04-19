@@ -51,8 +51,9 @@ fn slash_outcome_unknown_serializes_with_kind_tag() {
 
 #[test]
 fn types_implement_required_traits() {
-    fn assert_traits<T: Clone + std::fmt::Debug + serde::Serialize + for<'de> serde::Deserialize<'de>>()
-    {
+    fn assert_traits<
+        T: Clone + std::fmt::Debug + serde::Serialize + for<'de> serde::Deserialize<'de>,
+    >() {
     }
     assert_traits::<SlashCommand>();
     assert_traits::<SlashOutcome>();

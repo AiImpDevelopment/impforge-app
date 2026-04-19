@@ -136,7 +136,14 @@ pub fn dispatch(input: String, _thread_id: Option<String>) -> SlashOutcome {
     let (name, arg) = match trimmed.split_once(' ') {
         Some((n, a)) => {
             let a = a.trim();
-            (n.to_string(), if a.is_empty() { None } else { Some(a.to_string()) })
+            (
+                n.to_string(),
+                if a.is_empty() {
+                    None
+                } else {
+                    Some(a.to_string())
+                },
+            )
         }
         None => (trimmed.to_string(), None),
     };
@@ -164,10 +171,7 @@ pub async fn slash_catalog() -> AppResult<Vec<SlashCommand>> {
 
 /// Tauri: dispatch a slash-command input string in the context of an optional thread.
 #[tauri::command]
-pub async fn slash_dispatch(
-    input: String,
-    thread_id: Option<String>,
-) -> AppResult<SlashOutcome> {
+pub async fn slash_dispatch(input: String, thread_id: Option<String>) -> AppResult<SlashOutcome> {
     if input.is_empty() {
         return Err(AppError::InvalidArgument(
             "slash dispatch input may not be empty".into(),

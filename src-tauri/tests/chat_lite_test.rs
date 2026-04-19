@@ -50,8 +50,9 @@ fn chat_chunk_default_done_false() {
 
 #[test]
 fn message_implements_required_traits() {
-    fn assert_traits<T: Clone + std::fmt::Debug + serde::Serialize + for<'de> serde::Deserialize<'de>>()
-    {
+    fn assert_traits<
+        T: Clone + std::fmt::Debug + serde::Serialize + for<'de> serde::Deserialize<'de>,
+    >() {
     }
     assert_traits::<Message>();
     assert_traits::<MessageRole>();

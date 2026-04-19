@@ -22,10 +22,7 @@ pub struct KeyHandle(pub String);
 
 /// Encrypt the given plaintext with the key referenced by `key`.
 #[tauri::command]
-pub async fn crypto_encrypt(
-    _plaintext: Vec<u8>,
-    _key: KeyHandle,
-) -> AppResult<EncryptedBlob> {
+pub async fn crypto_encrypt(_plaintext: Vec<u8>, _key: KeyHandle) -> AppResult<EncryptedBlob> {
     Err(AppError::Internal(
         "crypto_lite::crypto_encrypt not implemented in Phase 1".into(),
     ))

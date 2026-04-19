@@ -219,7 +219,8 @@ mod tests {
         assert_eq!(json, "\"uuid-abc-123\"");
 
         // Round-trip: a bare string must deserialize back into a ThreadId.
-        let back: ThreadId = serde_json::from_str("\"uuid-abc-123\"").expect("deserialize ThreadId");
+        let back: ThreadId =
+            serde_json::from_str("\"uuid-abc-123\"").expect("deserialize ThreadId");
         assert_eq!(back, id);
     }
 

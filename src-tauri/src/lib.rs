@@ -16,11 +16,14 @@ pub mod eu_ai_act_full;
 pub mod feature_flags;
 pub mod hyperchat_lite;
 pub mod injection_firewall;
+pub mod keys;
 pub mod knowledge_lite;
 pub mod memory_lite;
 pub mod module_emergence_lite;
 pub mod pii_scrubber;
+pub mod providers;
 pub mod slash_commands;
+pub mod spend;
 pub mod universal_lite;
 pub mod upgrade_nudge;
 pub mod widgets_lite;
@@ -117,6 +120,13 @@ pub fn run() {
             digiimp_bridge::digiimp_get_state,
             digiimp_bridge::digiimp_rest_mode,
             digiimp_bridge::digiimp_wake,
+            providers::provider_list,
+            providers::provider_add,
+            providers::provider_remove,
+            providers::provider_chat_stream,
+            spend::spend_get_all,
+            spend::spend_get_provider,
+            spend::spend_reset,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

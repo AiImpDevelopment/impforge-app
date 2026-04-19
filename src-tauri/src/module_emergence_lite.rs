@@ -60,10 +60,7 @@ pub async fn emergence_ask(_req: IpcRequest) -> AppResult<IpcResponse> {
 
 /// Check whether the given module advertises the named capability.
 #[tauri::command]
-pub async fn emergence_has_capability(
-    _module: ModuleId,
-    _capability: String,
-) -> AppResult<bool> {
+pub async fn emergence_has_capability(_module: ModuleId, _capability: String) -> AppResult<bool> {
     Err(AppError::Internal(
         "module_emergence_lite::emergence_has_capability not implemented in Phase 1".into(),
     ))

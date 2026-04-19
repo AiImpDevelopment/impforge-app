@@ -40,10 +40,7 @@ pub struct ComplianceReport {
 
 /// Classify the risk tier for the given (model, purpose) tuple.
 #[tauri::command]
-pub async fn eu_ai_classify_risk(
-    _model: String,
-    _purpose: String,
-) -> AppResult<AiActRiskTier> {
+pub async fn eu_ai_classify_risk(_model: String, _purpose: String) -> AppResult<AiActRiskTier> {
     Err(AppError::Internal(
         "eu_ai_act_full::eu_ai_classify_risk not implemented in Phase 1".into(),
     ))
