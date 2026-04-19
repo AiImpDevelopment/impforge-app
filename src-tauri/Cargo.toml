@@ -51,5 +51,23 @@ impforge-remote = { workspace = true }
 genai = "0.5"
 keyring = { version = "3", features = ["apple-native", "windows-native", "sync-secret-service"] }
 
+# Document Upload + RAG — Feature 2 (Tier 2).  Pure-Rust ingest pipeline +
+# RRF hybrid retrieval.  See workspace.dependencies for rationale.
+rrf = { workspace = true }
+rusqlite = { workspace = true }
+lopdf = { workspace = true }
+pdfium-render = { workspace = true }
+calamine = { workspace = true }
+docx-rs = { workspace = true }
+pulldown-cmark = { workspace = true }
+scraper = { workspace = true }
+whatlang = { workspace = true }
+sha2 = { workspace = true }
+walkdir = { workspace = true }
+base64 = "0.22"
+dirs = "5"
+image = { version = "0.25", default-features = false, features = ["png"] }
+
 [dev-dependencies]
 tokio-test = "0.4"
+tempfile = "3"

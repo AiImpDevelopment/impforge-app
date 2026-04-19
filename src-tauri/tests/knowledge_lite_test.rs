@@ -29,11 +29,16 @@ fn search_result_roundtrips_through_json() {
         entry: sample_entry(),
         rank: 0.87,
         snippet: "Hello".into(),
+        sub_scores: serde_json::json!({"porter_rank": 1, "trigram_rank": null}),
+        line_start: 1,
+        line_end: 12,
     };
     let j = serde_json::to_string(&original).expect("serialize SearchResult");
     let back: SearchResult = serde_json::from_str(&j).expect("deserialize SearchResult");
     assert_eq!(original.rank, back.rank);
     assert_eq!(original.snippet, back.snippet);
+    assert_eq!(original.line_start, back.line_start);
+    assert_eq!(original.line_end, back.line_end);
 }
 
 #[test]

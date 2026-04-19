@@ -28,12 +28,18 @@ fn parse_result_roundtrips_through_json() {
     let original = ParseResult {
         format: DocumentFormat::Pdf,
         text: "Hello PDF".into(),
-        metadata: serde_json::json!({"pages": 3}),
+        title: "Doc".into(),
+        language: "en".into(),
+        page_count: 3,
+        headings: vec!["Intro".into(), "Body".into()],
+        extra: serde_json::json!({"pages": 3}),
     };
     let j = serde_json::to_string(&original).expect("serialize ParseResult");
     let back: ParseResult = serde_json::from_str(&j).expect("deserialize ParseResult");
     assert_eq!(original.text, back.text);
     assert_eq!(original.format, back.format);
+    assert_eq!(original.headings, back.headings);
+    assert_eq!(original.page_count, back.page_count);
 }
 
 #[test]

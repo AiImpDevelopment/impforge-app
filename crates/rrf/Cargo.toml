@@ -1,0 +1,22 @@
+# SPDX-License-Identifier: MIT
+[package]
+name = "rrf"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+homepage.workspace = true
+repository.workspace = true
+description = "Reciprocal Rank Fusion — pure-Rust merge of multiple ranked retrieval lists with no dependencies."
+
+[lib]
+name = "rrf"
+path = "src/lib.rs"
+
+[dependencies]
+# Intentionally zero — RRF is ~120 LoC of pure stdlib code.
+
+[dev-dependencies]
+# `approx` keeps the floating-point assertions readable.
+approx = "0.5"
