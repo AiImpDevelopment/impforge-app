@@ -7,6 +7,7 @@ pub mod chat_lite;
 pub mod chat_session_memory;
 pub mod hyperchat_lite;
 pub mod knowledge_lite;
+pub mod memory_lite;
 pub mod slash_commands;
 
 use error::AppResult;
@@ -43,6 +44,9 @@ pub fn run() {
             knowledge_lite::knowledge_insert,
             knowledge_lite::knowledge_search,
             knowledge_lite::knowledge_count,
+            memory_lite::memory_store,
+            memory_lite::memory_search,
+            memory_lite::memory_recall_recent,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
