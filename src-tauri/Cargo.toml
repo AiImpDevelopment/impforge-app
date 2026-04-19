@@ -32,6 +32,8 @@ uuid = { workspace = true }
 anyhow = { workspace = true }
 sqlx = { workspace = true }
 ollama-rs = { workspace = true }
+reqwest = { workspace = true }
+futures = { workspace = true }
 
 # impforge-cli workspace crates
 impforge-core = { workspace = true }

@@ -55,6 +55,8 @@ serde_json = "1"
 #   dep at the root.  Verified: cargo audit reports 0 vulns after this change.
 sqlx = { version = "0.8", default-features = false, features = ["sqlite", "runtime-tokio-rustls"] }
 ollama-rs = "0.3"
+reqwest = { version = "0.12", default-features = false, features = ["json", "stream", "rustls-tls"] }
+futures = "0.3"
 thiserror = "2"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
