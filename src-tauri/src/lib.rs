@@ -4,6 +4,7 @@
 pub mod error;
 
 pub mod auto_digest_lite;
+pub mod browser_import_oneshot;
 pub mod chat_lite;
 pub mod chat_session_memory;
 pub mod hyperchat_lite;
@@ -53,6 +54,9 @@ pub fn run() {
             auto_digest_lite::digest_list_sources,
             auto_digest_lite::digest_run_once,
             auto_digest_lite::digest_history,
+            browser_import_oneshot::browser_detect_profiles,
+            browser_import_oneshot::browser_import_bookmarks,
+            browser_import_oneshot::browser_import_history,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
