@@ -19,6 +19,7 @@ pub mod memory_lite;
 pub mod module_emergence_lite;
 pub mod pii_scrubber;
 pub mod slash_commands;
+pub mod universal_lite;
 pub mod widgets_lite;
 pub mod wikipedia_fetch;
 
@@ -95,6 +96,9 @@ pub fn run() {
             widgets_lite::widget_suspend,
             widgets_lite::widget_resume,
             widgets_lite::widget_close,
+            universal_lite::universal_register_tool,
+            universal_lite::universal_list_tools,
+            universal_lite::universal_invoke,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
