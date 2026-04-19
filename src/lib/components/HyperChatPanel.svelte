@@ -22,6 +22,7 @@
   import ChatMessage from './ChatMessage.svelte';
   import ChatInput from './ChatInput.svelte';
   import DigiImpPlaceholder from './DigiImpPlaceholder.svelte';
+  import ProviderPicker from './ProviderPicker.svelte';
   import { getChatState, clearLocalChat } from '$lib/stores/chat.svelte';
 
   const chat = $derived(getChatState());
@@ -56,22 +57,25 @@
       <div>
         <h1 class="font-display text-2xl font-bold text-impforge-neon">HyperChat</h1>
         <p class="mt-1 text-sm text-impforge-text-secondary">
-          Local Ollama chat — memory-only sessions
+          Multi-provider BYOK — pick a provider above
           <a
             href="https://impforge.com"
             class="ml-1 text-impforge-cyan underline-offset-2 hover:underline"
           >
-            (Pro adds persistence)
+            (Pro autopilots the choice for you)
           </a>
         </p>
       </div>
-      <button
-        type="button"
-        onclick={onClear}
-        class="rounded-md border border-impforge-border bg-impforge-bg-secondary px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-impforge-text-secondary transition-colors hover:border-impforge-neon hover:text-impforge-neon focus:outline-none focus:ring-2 focus:ring-impforge-neon"
-      >
-        New chat
-      </button>
+      <div class="flex items-center gap-3">
+        <ProviderPicker />
+        <button
+          type="button"
+          onclick={onClear}
+          class="rounded-md border border-impforge-border bg-impforge-bg-secondary px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-impforge-text-secondary transition-colors hover:border-impforge-neon hover:text-impforge-neon focus:outline-none focus:ring-2 focus:ring-impforge-neon"
+        >
+          New chat
+        </button>
+      </div>
     </div>
   </header>
 

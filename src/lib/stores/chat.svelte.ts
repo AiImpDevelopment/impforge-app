@@ -8,6 +8,7 @@
 // when `done=true`.
 
 import { invoke, Channel } from '@tauri-apps/api/core';
+import { getProvidersState } from '$lib/stores/providers.svelte';
 
 export type Role = 'user' | 'assistant' | 'system';
 
@@ -121,12 +122,27 @@ export async function sendMessage(content: string): Promise<void> {
     }
   };
 
+  // Route to the selected BYOK provider when one is configured
+  // (Feature 1 — multi-provider chat). Falls back to the legacy local-only
+  // `chat_stream` (which always talks to Ollama) when no provider is picked
+  // — same behavior the app shipped with at v0.2.0-alpha.
   try {
-    await invoke('chat_stream', {
-      messages: state.messages,
-      model: null,
-      onChunk
-    });
+    const providers = getProvidersState();
+    const useByok = providers.providers.length > 0;
+    if (useByok) {
+      await invoke('provider_chat_stream', {
+        provider: providers.selectedProviderId,
+        model: providers.selectedModel || null,
+        messages: state.messages,
+        onChunk
+      });
+    } else {
+      await invoke('chat_stream', {
+        messages: state.messages,
+        model: null,
+        onChunk
+      });
+    }
   } catch (e) {
     state.streaming = false;
     state.lastError = String(e);
