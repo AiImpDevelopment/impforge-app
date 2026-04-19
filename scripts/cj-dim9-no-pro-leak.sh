@@ -25,6 +25,18 @@ FORBIDDEN_PATTERNS=(
   'Elastic-2.0'
   'License: Elastic-2.0'
   'PRO_DYNAMICS'
+  # Microsoft-Recall anti-patterns — must NEVER appear in any tier
+  # (Feature 3 §Anti-pattern enforcement).  These names exist solely
+  # to fail this scan if a future contributor copy-pastes the wrong
+  # pattern out of a Microsoft Recall reverse-engineering blog post.
+  'screenshot_every_n_seconds'
+  'default_on_for_capture'
+  'cloud_sync_default_on'
+  'no_pii_filter'
+  'no_pause_button'
+  'telemetry_endpoint'
+  'screen_capture_loop'
+  'keystroke_capture'
 )
 
 # Files exempt from Dim-9 scan (the guardian itself defines the forbidden list,

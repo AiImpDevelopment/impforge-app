@@ -1,21 +1,24 @@
 // SPDX-License-Identifier: MIT
-//! Behavioral tests for browser_import_oneshot Phase 1 type skeleton.
+//! Behavioural integration tests for browser_import_oneshot Phase 2
+//! (Tier 2 of Feature 3, Global Digest).
 
 use impforge_app_lib::browser_import_oneshot::{
-    Bookmark, BrowserKind, BrowserProfile, HistoryEntry,
+    BrowserBookmark, BrowserFamily, BrowserHistoryItem, BrowserProfile,
 };
+use std::path::PathBuf;
 
 #[test]
-fn browser_kind_serializes_lowercase() {
+fn browser_family_serializes_lowercase() {
     for (k, expected) in [
-        (BrowserKind::Firefox, "firefox"),
-        (BrowserKind::Chromium, "chromium"),
-        (BrowserKind::Brave, "brave"),
-        (BrowserKind::Edge, "edge"),
-        (BrowserKind::Vivaldi, "vivaldi"),
-        (BrowserKind::Opera, "opera"),
+        (BrowserFamily::Firefox, "firefox"),
+        (BrowserFamily::Chrome, "chrome"),
+        (BrowserFamily::Chromium, "chromium"),
+        (BrowserFamily::Brave, "brave"),
+        (BrowserFamily::Edge, "edge"),
+        (BrowserFamily::Vivaldi, "vivaldi"),
+        (BrowserFamily::Opera, "opera"),
     ] {
-        let j = serde_json::to_string(&k).expect("serialize BrowserKind");
+        let j = serde_json::to_string(&k).expect("serialize BrowserFamily");
         assert_eq!(j, format!("\"{expected}\""));
     }
 }
@@ -23,40 +26,43 @@ fn browser_kind_serializes_lowercase() {
 #[test]
 fn browser_profile_roundtrips() {
     let original = BrowserProfile {
-        kind: BrowserKind::Firefox,
-        path: "/home/user/.mozilla".into(),
+        family: BrowserFamily::Firefox,
+        path: PathBuf::from("/home/user/.mozilla"),
         name: "default".into(),
     };
-    let j = serde_json::to_string(&original).expect("serialize BrowserProfile");
-    let back: BrowserProfile = serde_json::from_str(&j).expect("deserialize BrowserProfile");
-    assert_eq!(original.kind, back.kind);
+    let j = serde_json::to_string(&original).expect("serialize");
+    let back: BrowserProfile = serde_json::from_str(&j).expect("deserialize");
+    assert_eq!(original.family, back.family);
     assert_eq!(original.path, back.path);
     assert_eq!(original.name, back.name);
 }
 
 #[test]
 fn bookmark_roundtrips_through_json() {
-    let original = Bookmark {
+    let original = BrowserBookmark {
         url: "https://example.com".into(),
         title: "Example".into(),
         folder: Some("Bookmarks Bar".into()),
+        date_added: None,
     };
-    let j = serde_json::to_string(&original).expect("serialize Bookmark");
-    let back: Bookmark = serde_json::from_str(&j).expect("deserialize Bookmark");
+    let j = serde_json::to_string(&original).expect("ser");
+    let back: BrowserBookmark = serde_json::from_str(&j).expect("de");
     assert_eq!(original.url, back.url);
     assert_eq!(original.folder, back.folder);
 }
 
 #[test]
-fn history_entry_roundtrips_through_json() {
-    let original = HistoryEntry {
+fn history_item_roundtrips_through_json() {
+    let original = BrowserHistoryItem {
         url: "https://example.com".into(),
-        title: "Example".into(),
-        visited_at: chrono::Utc::now(),
+        title: Some("Example".into()),
+        visit_count: 5,
+        last_visit: None,
     };
-    let j = serde_json::to_string(&original).expect("serialize HistoryEntry");
-    let back: HistoryEntry = serde_json::from_str(&j).expect("deserialize HistoryEntry");
+    let j = serde_json::to_string(&original).expect("ser");
+    let back: BrowserHistoryItem = serde_json::from_str(&j).expect("de");
     assert_eq!(original.url, back.url);
+    assert_eq!(original.visit_count, 5);
 }
 
 #[test]
@@ -65,8 +71,8 @@ fn types_implement_required_traits() {
         T: Clone + std::fmt::Debug + serde::Serialize + for<'de> serde::Deserialize<'de>,
     >() {
     }
-    assert_traits::<BrowserKind>();
+    assert_traits::<BrowserFamily>();
     assert_traits::<BrowserProfile>();
-    assert_traits::<Bookmark>();
-    assert_traits::<HistoryEntry>();
+    assert_traits::<BrowserBookmark>();
+    assert_traits::<BrowserHistoryItem>();
 }

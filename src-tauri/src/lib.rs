@@ -9,6 +9,9 @@ pub mod chat_lite;
 pub mod chat_session_memory;
 pub mod cortex_lite;
 pub mod crypto_lite;
+pub mod digest_browser;
+pub mod digest_clipboard;
+pub mod digest_screenshots;
 pub mod digiimp_bridge;
 pub mod digu_privacy_full;
 pub mod document_parse;
@@ -77,9 +80,23 @@ pub fn run() {
             auto_digest_lite::digest_list_sources,
             auto_digest_lite::digest_run_once,
             auto_digest_lite::digest_history,
+            auto_digest_lite::digest_pause,
+            auto_digest_lite::digest_resume,
+            auto_digest_lite::digest_stats,
+            auto_digest_lite::digest_set_quiet_hours,
+            digest_clipboard::digest_clipboard_enable,
+            digest_clipboard::digest_clipboard_disable,
+            digest_clipboard::digest_clipboard_status,
+            digest_screenshots::digest_screenshots_enable,
+            digest_screenshots::digest_screenshots_disable,
+            digest_screenshots::digest_screenshots_status,
+            digest_screenshots::digest_screenshots_default_folder,
+            digest_browser::digest_browser_profiles,
+            digest_browser::digest_browser_import_bookmarks,
+            digest_browser::digest_browser_import_history,
             browser_import_oneshot::browser_detect_profiles,
-            browser_import_oneshot::browser_import_bookmarks,
-            browser_import_oneshot::browser_import_history,
+            browser_import_oneshot::browser_import_bookmarks_cmd,
+            browser_import_oneshot::browser_import_history_cmd,
             document_parse::document_detect_format,
             document_parse::document_extract_text,
             wikipedia_fetch::wikipedia_search,
