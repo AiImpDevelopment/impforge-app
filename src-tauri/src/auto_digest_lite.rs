@@ -1002,6 +1002,14 @@ impl DigestRuntime {
     }
 }
 
+/// Process-wide test-only mutex — every test that mutates
+/// `IMPFORGE_APP_HOME` must hold this guard for the lifetime of its
+/// tempdir.  Any per-module test mutex would race with siblings since
+/// the env var is process-wide.  Exported so `digest_browser` /
+/// `digest_clipboard` / `digest_screenshots` tests can reuse it.
+#[cfg(test)]
+pub static TEST_ENV_LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
+
 static RUNTIME: once_cell::sync::Lazy<Arc<DigestRuntime>> =
     once_cell::sync::Lazy::new(|| Arc::new(DigestRuntime::new()));
 
@@ -1151,23 +1159,23 @@ pub async fn digest_set_quiet_hours(
 mod tests {
     use super::*;
 
-    static ENV_LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
-
     struct HomeGuard {
         _lock: std::sync::MutexGuard<'static, ()>,
         _dir: tempfile::TempDir,
     }
 
     fn isolated_home() -> HomeGuard {
-        let guard = match ENV_LOCK.lock() {
+        let guard = match TEST_ENV_LOCK.lock() {
             Ok(g) => g,
             Err(p) => {
-                ENV_LOCK.clear_poison();
+                TEST_ENV_LOCK.clear_poison();
                 p.into_inner()
             }
         };
         let dir = tempfile::tempdir().expect("tempdir");
         std::env::set_var("IMPFORGE_APP_HOME", dir.path());
+        // Force RUNTIME to drop any cross-test in-memory state.
+        let _ = runtime().reload_from_disk();
         HomeGuard {
             _lock: guard,
             _dir: dir,

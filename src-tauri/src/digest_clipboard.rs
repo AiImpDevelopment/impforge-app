@@ -209,6 +209,25 @@ pub async fn digest_clipboard_status() -> AppResult<bool> {
 mod tests {
     use super::*;
 
+    /// Process-wide mutex so the LAST_HASH static doesn't race across
+    /// parallel test threads.  Required because cargo test runs unit
+    /// tests in parallel by default.
+    static CLIP_LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
+
+    fn reset_and_lock() -> std::sync::MutexGuard<'static, ()> {
+        let guard = match CLIP_LOCK.lock() {
+            Ok(g) => g,
+            Err(p) => {
+                CLIP_LOCK.clear_poison();
+                p.into_inner()
+            }
+        };
+        if let Ok(mut g) = LAST_HASH.lock() {
+            *g = None;
+        }
+        guard
+    }
+
     fn reset() {
         if let Ok(mut g) = LAST_HASH.lock() {
             *g = None;
@@ -231,19 +250,19 @@ mod tests {
 
     #[test]
     fn evaluate_dedups_same_payload() {
-        reset();
-        let cap1 = evaluate("hello").expect("first");
-        assert_eq!(cap1.text, "hello");
-        let cap2 = evaluate("hello");
+        let _g = reset_and_lock();
+        let cap1 = evaluate("hello-dedup-test").expect("first");
+        assert_eq!(cap1.text, "hello-dedup-test");
+        let cap2 = evaluate("hello-dedup-test");
         assert!(cap2.is_none(), "duplicate must be skipped");
     }
 
     #[test]
     fn evaluate_admits_distinct_payload() {
-        reset();
-        let _ = evaluate("first");
-        let cap = evaluate("second").expect("distinct");
-        assert_eq!(cap.text, "second");
+        let _g = reset_and_lock();
+        let _ = evaluate("first-distinct-test");
+        let cap = evaluate("second-distinct-test").expect("distinct");
+        assert_eq!(cap.text, "second-distinct-test");
     }
 
     #[test]

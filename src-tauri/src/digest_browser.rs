@@ -192,18 +192,16 @@ pub async fn digest_browser_import_history(
 mod tests {
     use super::*;
 
-    static ENV_LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
-
     struct HomeGuard {
         _lock: std::sync::MutexGuard<'static, ()>,
         _dir: tempfile::TempDir,
     }
 
     fn isolated_home() -> HomeGuard {
-        let guard = match ENV_LOCK.lock() {
+        let guard = match auto_digest_lite::TEST_ENV_LOCK.lock() {
             Ok(g) => g,
             Err(p) => {
-                ENV_LOCK.clear_poison();
+                auto_digest_lite::TEST_ENV_LOCK.clear_poison();
                 p.into_inner()
             }
         };
