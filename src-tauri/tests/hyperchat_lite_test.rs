@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: MIT
-//! Behavioral tests for hyperchat_lite Phase 1 type skeleton.
+//! Behavioral tests for hyperchat_lite Phase 2 implementation.
+//! Type-roundtrip tests stay; new tests exercise the real state machine,
+//! event hub, and session ring buffer.
 
-use impforge_app_lib::hyperchat_lite::event_stream::{Event, EventStreamStats};
-use impforge_app_lib::hyperchat_lite::modes::{HyperChatMode, ModeState, ModeTransition, TransitionError};
-use impforge_app_lib::hyperchat_lite::session::HyperChatSession;
+use impforge_app_lib::hyperchat_lite::event_stream::{hub, Event, EventHub, EventStreamStats};
+use impforge_app_lib::hyperchat_lite::modes::{
+    transition, HyperChatMode, ModeState, ModeTransition, TransitionError,
+};
+use impforge_app_lib::hyperchat_lite::session::{HyperChatSession, MAX_RESIDENT_EVENTS};
 
 #[test]
 fn hyperchat_mode_serializes_lowercase() {
@@ -107,4 +111,90 @@ fn types_implement_required_traits() {
     assert_traits::<Event>();
     assert_traits::<EventStreamStats>();
     assert_traits::<HyperChatSession>();
+}
+
+// --- Phase 2 behavioral tests ---
+
+#[test]
+fn modes_chat_to_edit_allowed() {
+    let result = transition(HyperChatMode::Chat, HyperChatMode::Edit);
+    assert!(result.is_ok());
+}
+
+#[test]
+fn modes_chat_to_agent_allowed() {
+    let result = transition(HyperChatMode::Chat, HyperChatMode::Agent);
+    assert!(result.is_ok());
+}
+
+#[test]
+fn modes_same_mode_is_noop() {
+    let err = transition(HyperChatMode::Chat, HyperChatMode::Chat).expect_err("same mode errors");
+    assert_eq!(
+        err,
+        TransitionError::SameMode {
+            mode: HyperChatMode::Chat
+        }
+    );
+}
+
+#[test]
+fn modes_all_pairs_in_either_direction() {
+    for (a, b) in [
+        (HyperChatMode::Chat, HyperChatMode::Edit),
+        (HyperChatMode::Chat, HyperChatMode::Agent),
+        (HyperChatMode::Edit, HyperChatMode::Chat),
+        (HyperChatMode::Edit, HyperChatMode::Agent),
+        (HyperChatMode::Agent, HyperChatMode::Chat),
+        (HyperChatMode::Agent, HyperChatMode::Edit),
+    ] {
+        let t = transition(a, b).expect("ok");
+        assert_eq!(t.from, a);
+        assert_eq!(t.to, b);
+    }
+}
+
+#[test]
+fn event_hub_receives_published_events() {
+    let h = EventHub::new();
+    let mut sub = h.subscribe();
+    h.publish(Event::Test {
+        message: "hello".into(),
+    });
+    let recv = sub.try_recv();
+    match recv {
+        Some(Event::Test { message }) => assert_eq!(message, "hello"),
+        other => panic!("expected Some(Test), got {other:?}"),
+    }
+}
+
+#[test]
+fn event_hub_publishes_to_multiple_subscribers() {
+    let h = EventHub::new();
+    let mut a = h.subscribe();
+    let mut b = h.subscribe();
+    h.publish(Event::ChatStreamEnded {
+        run_id: "r1".into(),
+    });
+    assert!(matches!(a.try_recv(), Some(Event::ChatStreamEnded { .. })));
+    assert!(matches!(b.try_recv(), Some(Event::ChatStreamEnded { .. })));
+}
+
+#[test]
+fn global_hub_is_a_singleton() {
+    // Calling `hub()` twice must return the same address.
+    let a = hub() as *const EventHub;
+    let b = hub() as *const EventHub;
+    assert_eq!(a, b, "hub() must return the same singleton");
+}
+
+#[test]
+fn session_event_buffer_is_capped_at_max_resident() {
+    let mut s = HyperChatSession::new();
+    for i in 0..(MAX_RESIDENT_EVENTS + 5) {
+        s.append_event(Event::Test {
+            message: format!("e{i}"),
+        });
+    }
+    assert_eq!(s.recent_events.len(), MAX_RESIDENT_EVENTS);
 }
