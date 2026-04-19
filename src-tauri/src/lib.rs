@@ -1,5 +1,17 @@
 // SPDX-License-Identifier: MIT
 //! ImpForge MIT freemium app — Tauri 2.10 + Svelte 5 backend.
+//!
+//! ## Crown-Jewel module map
+//!
+//! Every domain lives in its own module; large modules use the
+//! [`commands.rs` sub-split pattern](docs/superpowers/specs) to keep
+//! the wire surface separate from business logic.  This file is a
+//! pure orchestrator: module declarations + Tauri builder + a single
+//! grouped handler-registration block (with section comments per
+//! Crown-Jewel domain).
+//!
+//! New commands MUST be registered in this file.  Frontend bindings
+//! are emitted from the same names, so renames are breaking changes.
 
 pub mod error;
 
@@ -7,6 +19,7 @@ pub mod auto_digest_lite;
 pub mod browser_import_oneshot;
 pub mod chat_lite;
 pub mod chat_session_memory;
+pub mod code_sandbox_lite;
 pub mod cortex_lite;
 pub mod crypto_lite;
 pub mod digest_browser;
@@ -17,7 +30,6 @@ pub mod digu_privacy_full;
 pub mod document_parse;
 pub mod eu_ai_act_full;
 pub mod feature_flags;
-pub mod code_sandbox_lite;
 pub mod hyperchat_lite;
 pub mod injection_firewall;
 pub mod keys;
@@ -36,6 +48,9 @@ pub mod wikipedia_fetch;
 
 use error::AppResult;
 
+/// Liveness probe — returns `"pong"`.  Frontend uses this on first
+/// load to confirm the Tauri runtime is alive.  Stays in `lib.rs` on
+/// purpose: it's the only command without a domain home.
 #[tauri::command]
 fn ping() -> AppResult<String> {
     Ok("pong".to_string())
@@ -54,17 +69,22 @@ pub fn run() {
         .plugin(tauri_plugin_store::Builder::default().build())
         .plugin(tauri_plugin_updater::Builder::default().build())
         .invoke_handler(tauri::generate_handler![
+            // ── Health ─────────────────────────────────────────────
             ping,
+            // ── Chat (multi-provider stream + session memory) ──────
             chat_lite::chat_stream,
             chat_session_memory::session_create_thread,
             chat_session_memory::session_append_message,
             chat_session_memory::session_list_threads,
             chat_session_memory::session_get_messages,
+            // ── Slash commands ─────────────────────────────────────
             slash_commands::slash_catalog,
             slash_commands::slash_dispatch,
-            hyperchat_lite::hyperchat_mode_transition,
-            hyperchat_lite::hyperchat_event_stats,
-            hyperchat_lite::hyperchat_session_new,
+            // ── HyperChat (mode machine + event bus + sessions) ────
+            hyperchat_lite::commands::hyperchat_mode_transition,
+            hyperchat_lite::commands::hyperchat_event_stats,
+            hyperchat_lite::commands::hyperchat_session_new,
+            // ── Knowledge (RAG: ingest + search + cite) ────────────
             knowledge_lite::knowledge_insert,
             knowledge_lite::knowledge_search,
             knowledge_lite::knowledge_count,
@@ -74,9 +94,11 @@ pub fn run() {
             knowledge_lite::knowledge_get_citation,
             knowledge_lite::knowledge_stats,
             knowledge_lite::knowledge_pro_teaser_count,
+            // ── Memory (transient session memory) ──────────────────
             memory_lite::memory_store,
             memory_lite::memory_search,
             memory_lite::memory_recall_recent,
+            // ── Auto-digest (RSS + folders + screenshots + browser) ─
             auto_digest_lite::digest_add_source,
             auto_digest_lite::digest_remove_source,
             auto_digest_lite::digest_list_sources,
@@ -99,10 +121,13 @@ pub fn run() {
             browser_import_oneshot::browser_detect_profiles,
             browser_import_oneshot::browser_import_bookmarks_cmd,
             browser_import_oneshot::browser_import_history_cmd,
+            // ── Document parsing (PDF / DOCX / XLSX / HTML / MD) ───
             document_parse::document_detect_format,
             document_parse::document_extract_text,
+            // ── Wikipedia ──────────────────────────────────────────
             wikipedia_fetch::wikipedia_search,
             wikipedia_fetch::wikipedia_fetch_article,
+            // ── Privacy & compliance (DiGu + EU AI Act + PII) ──────
             digu_privacy_full::privacy_get_tier,
             digu_privacy_full::privacy_set_tier,
             digu_privacy_full::privacy_get_policy,
@@ -112,16 +137,19 @@ pub fn run() {
             eu_ai_act_full::eu_ai_export_report,
             pii_scrubber::pii_detect,
             pii_scrubber::pii_scrub,
+            // ── Security (injection firewall + crypto) ─────────────
             injection_firewall::injection_scan,
             injection_firewall::injection_sanitize,
             crypto_lite::crypto_encrypt,
             crypto_lite::crypto_decrypt,
             crypto_lite::crypto_derive_key,
+            // ── Cortex + Emergence (event bus + capability registry) ─
             cortex_lite::cortex_invoke_tool,
             cortex_lite::cortex_publish_event,
             module_emergence_lite::emergence_register,
             module_emergence_lite::emergence_ask,
             module_emergence_lite::emergence_has_capability,
+            // ── Widgets + Universal Server ─────────────────────────
             widgets_lite::widget_create,
             widgets_lite::widget_list,
             widgets_lite::widget_suspend,
@@ -130,6 +158,7 @@ pub fn run() {
             universal_lite::universal_register_tool,
             universal_lite::universal_list_tools,
             universal_lite::universal_invoke,
+            // ── Feature flags + upgrade nudges ─────────────────────
             feature_flags::feature_flag_list,
             feature_flags::feature_flag_set,
             feature_flags::feature_flag_stats,
@@ -137,6 +166,7 @@ pub fn run() {
             upgrade_nudge::nudge_evaluate,
             upgrade_nudge::nudge_dismiss,
             upgrade_nudge::nudge_global_disable,
+            // ── DigiImp companion bridge ───────────────────────────
             digiimp_bridge::digiimp_set_state,
             digiimp_bridge::digiimp_set_energy,
             digiimp_bridge::digiimp_set_glow,
@@ -145,6 +175,7 @@ pub fn run() {
             digiimp_bridge::digiimp_get_state,
             digiimp_bridge::digiimp_rest_mode,
             digiimp_bridge::digiimp_wake,
+            // ── Providers (BYOK keys + chat stream) + spend ───────
             providers::provider_list,
             providers::provider_add,
             providers::provider_remove,
@@ -152,6 +183,7 @@ pub fn run() {
             spend::spend_get_all,
             spend::spend_get_provider,
             spend::spend_reset,
+            // ── MCP marketplace + runner + health + ledger + bundle ─
             mcp::commands::mcp_marketplace_browse,
             mcp::commands::mcp_marketplace_search,
             mcp::commands::mcp_marketplace_sync_mirror,
@@ -184,32 +216,32 @@ pub fn run() {
             mcp::commands::mcp_sandbox_status,
             mcp::commands::mcp_bundle_list,
             mcp::commands::mcp_bundle_install,
-            // Code Interpreter Sandbox — Feature 5 (Tier 2).
-            code_sandbox_lite::sandbox_create_cell,
-            code_sandbox_lite::sandbox_run_cell,
-            code_sandbox_lite::sandbox_stop_cell,
-            code_sandbox_lite::sandbox_clear_cell,
-            code_sandbox_lite::sandbox_get_outputs,
-            code_sandbox_lite::sandbox_get_variables,
-            code_sandbox_lite::sandbox_inspect_variable,
-            code_sandbox_lite::sandbox_resource_status,
-            code_sandbox_lite::sandbox_set_limits,
-            code_sandbox_lite::sandbox_get_limits,
-            code_sandbox_lite::sandbox_supported_languages,
-            code_sandbox_lite::sandbox_get_history,
-            code_sandbox_lite::sandbox_export_notebook,
-            code_sandbox_lite::sandbox_import_notebook,
-            code_sandbox_lite::sandbox_attach_file,
-            code_sandbox_lite::sandbox_detach_file,
-            code_sandbox_lite::sandbox_list_attached_files,
-            code_sandbox_lite::sandbox_provenance_chain,
-            code_sandbox_lite::sandbox_audit_log,
-            code_sandbox_lite::sandbox_pause_session,
-            code_sandbox_lite::sandbox_resume_session,
-            code_sandbox_lite::sandbox_session_status,
-            code_sandbox_lite::sandbox_quick_python,
-            code_sandbox_lite::sandbox_quick_js,
-            code_sandbox_lite::sandbox_health_check,
+            // ── Code interpreter sandbox (wasmtime + Pyodide + QuickJS) ─
+            code_sandbox_lite::commands::sandbox_create_cell,
+            code_sandbox_lite::commands::sandbox_run_cell,
+            code_sandbox_lite::commands::sandbox_stop_cell,
+            code_sandbox_lite::commands::sandbox_clear_cell,
+            code_sandbox_lite::commands::sandbox_get_outputs,
+            code_sandbox_lite::commands::sandbox_get_variables,
+            code_sandbox_lite::commands::sandbox_inspect_variable,
+            code_sandbox_lite::commands::sandbox_resource_status,
+            code_sandbox_lite::commands::sandbox_set_limits,
+            code_sandbox_lite::commands::sandbox_get_limits,
+            code_sandbox_lite::commands::sandbox_supported_languages,
+            code_sandbox_lite::commands::sandbox_get_history,
+            code_sandbox_lite::commands::sandbox_export_notebook,
+            code_sandbox_lite::commands::sandbox_import_notebook,
+            code_sandbox_lite::commands::sandbox_attach_file,
+            code_sandbox_lite::commands::sandbox_detach_file,
+            code_sandbox_lite::commands::sandbox_list_attached_files,
+            code_sandbox_lite::commands::sandbox_provenance_chain,
+            code_sandbox_lite::commands::sandbox_audit_log,
+            code_sandbox_lite::commands::sandbox_pause_session,
+            code_sandbox_lite::commands::sandbox_resume_session,
+            code_sandbox_lite::commands::sandbox_session_status,
+            code_sandbox_lite::commands::sandbox_quick_python,
+            code_sandbox_lite::commands::sandbox_quick_js,
+            code_sandbox_lite::commands::sandbox_health_check,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
