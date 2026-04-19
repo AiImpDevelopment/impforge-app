@@ -87,6 +87,15 @@ oauth2 = { workspace = true }
 landlock = { workspace = true }
 seccompiler = { workspace = true }
 
+# Code Interpreter Sandbox — Feature 5 (Tier 2).
+# Wasmtime + Pyodide blob (downloaded on demand) + rquickjs for JS.
+# See workspace.dependencies for full rationale.  These three crates
+# carry the entire Tier-2 sandbox dependency surface — no native FFI.
+wasmtime = { workspace = true }
+wasmtime-wasi = { workspace = true }
+rquickjs = { workspace = true }
+wat = { workspace = true }
+
 # tempfile = WAL-copy of locked browser SQLite DBs (Firefox / Chrome).
 # Used by `browser_import_oneshot::open_locked_sqlite`.  Must be in
 # main deps (not dev-deps) because it's compiled into production code.

@@ -17,6 +17,7 @@ pub mod digu_privacy_full;
 pub mod document_parse;
 pub mod eu_ai_act_full;
 pub mod feature_flags;
+pub mod code_sandbox_lite;
 pub mod hyperchat_lite;
 pub mod injection_firewall;
 pub mod keys;

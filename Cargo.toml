@@ -84,6 +84,22 @@ oauth2 = "5"
 landlock = "0.4"
 seccompiler = "0.5"
 
+# Code Interpreter Sandbox — Feature 5 (Tier 2).
+# - `wasmtime` 27 = pinned to 27.0.0 to match impforge-cli's MSRV-1.80
+#   commitment.  We don't take 37+ in App because 37 needs Rust 1.87
+#   and 43 needs newer; pinning to 27 lets ALL three tiers share one
+#   wasmtime version + one cache.  WASIp3 stream/future is a Tier-3
+#   (Pro) feature and falls back to chunked polling here.
+# - `wasmtime-wasi` 27 = matched WASI bindings.
+# - `rquickjs` 0.11 = pure-Rust QuickJS bindings (MIT).  Used to run
+#   user-supplied JavaScript in the sandbox.
+# - `wat` 1 = WAT → binary compiler used in unit tests.
+# - License: Apache-2.0 WITH LLVM-exception (wasmtime), MIT (rquickjs).
+wasmtime = { version = "27", default-features = false, features = ["runtime", "wat", "cranelift", "std"] }
+wasmtime-wasi = "27"
+rquickjs = { version = "0.11", default-features = false, features = ["macro", "loader"] }
+wat = "1"
+
 # Tauri 2.x — versions checked against crates.io 2026-04-19
 # NOTE: api-all feature was Tauri 1; Tauri 2 splits into per-API capabilities (opt-in later)
 tauri = { version = "2", features = [] }
