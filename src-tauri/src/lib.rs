@@ -9,6 +9,7 @@ pub mod chat_lite;
 pub mod chat_session_memory;
 pub mod digu_privacy_full;
 pub mod document_parse;
+pub mod eu_ai_act_full;
 pub mod hyperchat_lite;
 pub mod knowledge_lite;
 pub mod memory_lite;
@@ -68,6 +69,9 @@ pub fn run() {
             digu_privacy_full::privacy_set_tier,
             digu_privacy_full::privacy_get_policy,
             digu_privacy_full::privacy_check_operation,
+            eu_ai_act_full::eu_ai_classify_risk,
+            eu_ai_act_full::eu_ai_log_decision,
+            eu_ai_act_full::eu_ai_export_report,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
