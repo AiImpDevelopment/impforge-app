@@ -16,16 +16,17 @@ homepage = "https://impforge.com"
 repository = "https://github.com/AiImpDevelopment/impforge-app"
 
 [workspace.dependencies]
-# impforge-cli workspace crates (path deps for now; published to crates.io later)
-impforge-core = { path = "../impforge-cli/crates/impforge-core" }
-impforge-models = { path = "../impforge-cli/crates/impforge-models" }
-impforge-mcp-server = { path = "../impforge-cli/crates/impforge-mcp-server" }
-impforge-emergence = { path = "../impforge-cli/crates/impforge-emergence" }
-impforge-autonomy = { path = "../impforge-cli/crates/impforge-autonomy" }
-impforge-crown-jewel = { path = "../impforge-cli/crates/impforge-crown-jewel" }
-impforge-universal = { path = "../impforge-cli/crates/impforge-universal" }
-impforge-bench = { path = "../impforge-cli/crates/impforge-bench" }
-impforge-remote = { path = "../impforge-cli/crates/impforge-remote" }
+# impforge-cli workspace crates (path deps + version pin for cargo-deny;
+# version matches impforge-cli workspace.package.version = "0.1.0")
+impforge-core = { path = "../impforge-cli/crates/impforge-core", version = "0.1.0" }
+impforge-models = { path = "../impforge-cli/crates/impforge-models", version = "0.1.0" }
+impforge-mcp-server = { path = "../impforge-cli/crates/impforge-mcp-server", version = "0.1.0" }
+impforge-emergence = { path = "../impforge-cli/crates/impforge-emergence", version = "0.1.0" }
+impforge-autonomy = { path = "../impforge-cli/crates/impforge-autonomy", version = "0.1.0" }
+impforge-crown-jewel = { path = "../impforge-cli/crates/impforge-crown-jewel", version = "0.1.0" }
+impforge-universal = { path = "../impforge-cli/crates/impforge-universal", version = "0.1.0" }
+impforge-bench = { path = "../impforge-cli/crates/impforge-bench", version = "0.1.0" }
+impforge-remote = { path = "../impforge-cli/crates/impforge-remote", version = "0.1.0" }
 
 # Tauri 2.x — versions checked against crates.io 2026-04-19
 # NOTE: api-all feature was Tauri 1; Tauri 2 splits into per-API capabilities (opt-in later)
@@ -46,7 +47,13 @@ tauri-plugin-decorum = "1"
 tokio = { version = "1", features = ["full"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-sqlx = { version = "0.8", features = ["sqlite", "runtime-tokio-rustls"] }
+# sqlx — sqlite-only, default-features disabled.  Why default-features = false:
+#   sqlx 0.8 defaults include "any" + "macros" + "migrate" + "json", and "any"
+#   enables AnyDriver which pulls sqlx-mysql + sqlx-postgres → rsa 0.9.x →
+#   RUSTSEC-2023-0071 (Marvin Attack timing sidechannel).  With default-features
+#   = false we explicitly opt-in to sqlite + tokio-rustls, eliminating the rsa
+#   dep at the root.  Verified: cargo audit reports 0 vulns after this change.
+sqlx = { version = "0.8", default-features = false, features = ["sqlite", "runtime-tokio-rustls"] }
 ollama-rs = "0.3"
 thiserror = "2"
 tracing = "0.1"

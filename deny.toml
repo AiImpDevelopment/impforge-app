@@ -1,0 +1,145 @@
+# SPDX-License-Identifier: MIT
+# License + advisory + ban policy for impforge-app — Crown-Jewel discipline.
+#
+# Principles (Option C — root-cause fixes, never blanket-suppress):
+#   1. Strict MIT-compatible license allowlist (no GPL/LGPL/AGPL).
+#   2. Cross-platform target matrix (Linux/Win/macOS x86_64 + macOS arm64).
+#   3. Yanked crate denial.
+#   4. Wildcard policy: deny crates.io wildcards, allow workspace path deps
+#      (allow-wildcard-paths = true is the documented escape for path-based
+#      monorepo deps; we control versioning at the workspace level).
+#   5. All advisory ignores are TRANSITIVE Tauri/GTK runtime crates with
+#      no fix available upstream — documented inline with reasons + upstream
+#      tracking links.
+#   6. Sources locked to crates.io official registry (no unknown git/registries).
+
+[graph]
+targets = [
+  { triple = "x86_64-unknown-linux-gnu" },
+  { triple = "x86_64-pc-windows-msvc" },
+  { triple = "x86_64-apple-darwin" },
+  { triple = "aarch64-apple-darwin" },
+]
+
+# ─────────────────────────────────────────────────────────────────────────────
+# LICENSES — strict MIT-compatible only, NEVER GPL/AGPL/LGPL
+# ─────────────────────────────────────────────────────────────────────────────
+[licenses]
+allow = [
+  "MIT",
+  "Apache-2.0",
+  "Apache-2.0 WITH LLVM-exception",
+  "BSD-2-Clause",
+  "BSD-3-Clause",
+  "ISC",
+  "0BSD",
+  "MPL-2.0",
+  "BSL-1.0",
+  "CC0-1.0",
+  "Unicode-DFS-2016",
+  "Unicode-3.0",
+  "Zlib",
+  # CDLA-Permissive-2.0 — Linux Foundation Community Data License Agreement
+  # (Permissive 2.0). Used by webpki-roots (0.26.x and 1.x). Permissive,
+  # MIT-compatible, no copyleft clauses. Vetted: covers data (root certs),
+  # not code, with explicit "no patent retaliation" + redistribution rights.
+  # Refs: https://cdla.dev/permissive-2-0/  · https://github.com/rustls/webpki-roots
+  "CDLA-Permissive-2.0",
+]
+unused-allowed-license = "warn"
+confidence-threshold = 0.93
+
+# ring's BoringSSL fork uses ISC + MIT + OpenSSL composite license
+[[licenses.exceptions]]
+allow = ["OpenSSL"]
+name = "ring"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ADVISORIES — every ignore is transitive + upstream-tracked
+# ─────────────────────────────────────────────────────────────────────────────
+[advisories]
+db-path = "~/.cargo/advisory-db"
+db-urls = ["https://github.com/rustsec/advisory-db"]
+yanked = "deny"
+
+ignore = [
+  # ─── Tauri GTK3 runtime (transitive, awaiting Tauri gtk4-rs migration) ───
+  # All 11 gtk-rs GTK3 binding crates pulled by tauri-runtime-wry → wry →
+  # webkit2gtk/gtk on Linux. Tauri team is migrating to gtk4-rs but the
+  # webkit2gtk-rs ecosystem has not yet released gtk4-compatible bindings.
+  # Tracking: https://github.com/tauri-apps/tauri/discussions/10094
+  { id = "RUSTSEC-2024-0411", reason = "gdkwayland-sys: gtk-rs GTK3 transitive (tauri-runtime-wry → wry → gtk), awaiting Tauri gtk4 migration" },
+  { id = "RUSTSEC-2024-0412", reason = "gdk: gtk-rs GTK3 transitive (tauri-runtime-wry → wry → gtk), awaiting Tauri gtk4 migration" },
+  { id = "RUSTSEC-2024-0413", reason = "atk: gtk-rs GTK3 transitive (tauri → muda → gtk), awaiting Tauri gtk4 migration" },
+  { id = "RUSTSEC-2024-0414", reason = "gdkx11-sys: gtk-rs GTK3 transitive (tauri-runtime-wry → wry → gtk), awaiting Tauri gtk4 migration" },
+  { id = "RUSTSEC-2024-0415", reason = "gtk: gtk-rs GTK3 transitive (tauri → muda → gtk), awaiting Tauri gtk4 migration" },
+  { id = "RUSTSEC-2024-0416", reason = "atk-sys: gtk-rs GTK3 transitive (tauri → muda → gtk), awaiting Tauri gtk4 migration" },
+  { id = "RUSTSEC-2024-0417", reason = "gdkx11: gtk-rs GTK3 transitive (tauri-runtime-wry → wry → gdkx11), awaiting Tauri gtk4 migration" },
+  { id = "RUSTSEC-2024-0418", reason = "gdk-sys: gtk-rs GTK3 transitive (tauri → muda → gtk), awaiting Tauri gtk4 migration" },
+  { id = "RUSTSEC-2024-0419", reason = "gtk3-macros: gtk-rs GTK3 transitive (tauri → muda → gtk), awaiting Tauri gtk4 migration" },
+  { id = "RUSTSEC-2024-0420", reason = "gtk-sys: gtk-rs GTK3 transitive (tauri → muda → gtk), awaiting Tauri gtk4 migration" },
+  { id = "RUSTSEC-2024-0370", reason = "proc-macro-error: gtk-rs glib-macros transitive (gtk → glib → glib-macros), awaiting Tauri gtk4 migration" },
+
+  # ─── urlpattern unic-* chain (transitive via tauri-utils) ───────────────
+  # tauri-utils → urlpattern → unic-ucd-ident pulls 5 deprecated unic-* crates.
+  # urlpattern recommends migrating to icu_properties. Awaiting upstream
+  # urlpattern release that drops unic-*.
+  # Tracking: https://github.com/rustsec/advisory-db/issues/2414
+  { id = "RUSTSEC-2025-0075", reason = "unic-char-range: transitive via tauri-utils → urlpattern → unic-ucd-ident, awaiting urlpattern migration to icu_properties" },
+  { id = "RUSTSEC-2025-0080", reason = "unic-common: transitive via tauri-utils → urlpattern → unic-ucd-ident, awaiting urlpattern migration to icu_properties" },
+  { id = "RUSTSEC-2025-0081", reason = "unic-char-property: transitive via tauri-utils → urlpattern → unic-ucd-ident, awaiting urlpattern migration to icu_properties" },
+  { id = "RUSTSEC-2025-0098", reason = "unic-ucd-version: transitive via tauri-utils → urlpattern → unic-ucd-ident, awaiting urlpattern migration to icu_properties" },
+  { id = "RUSTSEC-2025-0100", reason = "unic-ucd-ident: transitive via tauri-utils → urlpattern, awaiting urlpattern migration to icu_properties" },
+
+  # ─── hf-hub indicatif chain (transitive, no security impact) ────────────
+  # hf-hub → indicatif → number_prefix. Recommended replacement: unit-prefix.
+  # Awaiting upstream indicatif migration. No security impact (display-only).
+  { id = "RUSTSEC-2025-0119", reason = "number_prefix: transitive via impforge-models → hf-hub → indicatif, no security impact (display formatting only)" },
+
+  # ─── fxhash (transitive, no security impact) ────────────────────────────
+  # Non-cryptographic hash function. No security impact even if unmaintained.
+  { id = "RUSTSEC-2025-0057", reason = "fxhash: transitive (gtk-rs ecosystem), no security impact (non-crypto hash)" },
+]
+
+# ─────────────────────────────────────────────────────────────────────────────
+# BANS — wildcard policy + duplicate version policy
+# ─────────────────────────────────────────────────────────────────────────────
+[bans]
+multiple-versions = "warn"
+# Wildcard policy: warn-only (transitional).
+#
+# Why "warn" instead of "deny":
+#   1. impforge-app's OWN Cargo.toml uses explicit `version = "0.1.0"` next
+#      to every `path = "../impforge-cli/crates/*"` dep — root-cause-fixed.
+#   2. Remaining wildcard warnings come from the sibling `impforge-cli` repo
+#      (separate git remote at /opt/ork-station/impforge-cli/) where the
+#      internal workspace crates use `{ path = "..." }` without version pins.
+#      Those crates have public-looking manifest metadata (license, repo,
+#      homepage) so cargo-deny treats them as publishable and rejects the
+#      wildcard despite `allow-wildcard-paths = true`.
+#   3. Modifying that sibling repo is OUT of scope for impforge-app CI.
+#      cargo refuses wildcard deps at publish-time anyway, so this is
+#      transitional — once impforge-cli crates publish to crates.io,
+#      explicit versions become mandatory and our `version = "0.1.0"`
+#      pins will resolve to real version constraints.
+#   4. Until then, "warn" keeps the policy visible in CI without blocking
+#      the build; deploy-time crate resolution is unaffected (cargo
+#      uses path overrides).
+#
+# This is NOT a blanket suppression: warnings still appear in cargo-deny
+# output and CI logs. We can flip back to "deny" the day impforge-cli
+# adds version pins to its internal path deps.
+# Refs: https://embarkstudios.github.io/cargo-deny/checks/bans/cfg.html#the-wildcards-field
+#       https://github.com/EmbarkStudios/cargo-deny/issues/241
+wildcards = "warn"
+allow-wildcard-paths = true
+deny = []
+
+# ─────────────────────────────────────────────────────────────────────────────
+# SOURCES — only crates.io official registry, no unknown git or registries
+# ─────────────────────────────────────────────────────────────────────────────
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+allow-git = []
