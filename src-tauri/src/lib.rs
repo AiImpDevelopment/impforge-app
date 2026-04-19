@@ -11,6 +11,7 @@ pub mod digu_privacy_full;
 pub mod document_parse;
 pub mod eu_ai_act_full;
 pub mod hyperchat_lite;
+pub mod injection_firewall;
 pub mod knowledge_lite;
 pub mod memory_lite;
 pub mod pii_scrubber;
@@ -75,6 +76,8 @@ pub fn run() {
             eu_ai_act_full::eu_ai_export_report,
             pii_scrubber::pii_detect,
             pii_scrubber::pii_scrub,
+            injection_firewall::injection_scan,
+            injection_firewall::injection_sanitize,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
