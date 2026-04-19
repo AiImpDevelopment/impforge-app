@@ -87,11 +87,14 @@ pub fn build_engine() -> AppResult<wasmtime::Engine> {
     wasmtime::Engine::new(&cfg).map_err(|e| AppError::Internal(format!("engine init: {e}")))
 }
 
+/// Cancellation flag handle — raised by `cancel_cell`, polled by the
+/// epoch tick thread.
+type CancelFlag = Arc<std::sync::atomic::AtomicBool>;
+
 /// Cancellation registry — `cancel_cell` raises a flag the executing
 /// thread polls between epochs.
-fn cancel_registry() -> Arc<Mutex<HashMap<CellId, Arc<std::sync::atomic::AtomicBool>>>> {
-    static REG: OnceLock<Arc<Mutex<HashMap<CellId, Arc<std::sync::atomic::AtomicBool>>>>> =
-        OnceLock::new();
+fn cancel_registry() -> Arc<Mutex<HashMap<CellId, CancelFlag>>> {
+    static REG: OnceLock<Arc<Mutex<HashMap<CellId, CancelFlag>>>> = OnceLock::new();
     REG.get_or_init(|| Arc::new(Mutex::new(HashMap::new()))).clone()
 }
 

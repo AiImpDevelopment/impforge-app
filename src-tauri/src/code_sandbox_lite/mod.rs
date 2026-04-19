@@ -114,7 +114,7 @@ pub async fn sandbox_create_cell(
     env: Option<Vec<(String, String)>>,
     tags: Option<Vec<String>>,
 ) -> AppResult<Cell> {
-    let lang = Lang::parse(&lang).map_err(|e| crate::error::AppError::InvalidArgument(e))?;
+    let lang = Lang::parse(&lang).map_err(crate::error::AppError::InvalidArgument)?;
     let s = state();
     let id = helpers::new_id("cell");
     let cell = Cell {
@@ -242,7 +242,7 @@ pub async fn sandbox_resource_status(session_id: String) -> AppResult<BudgetSnap
 #[tauri::command]
 pub async fn sandbox_set_limits(session_id: String, limits: Limits) -> AppResult<()> {
     helpers::validate_limits(&limits)
-        .map_err(|e| crate::error::AppError::InvalidArgument(e))?;
+        .map_err(crate::error::AppError::InvalidArgument)?;
     let s = state();
     let mut sessions = s.sessions.lock()
         .map_err(|e| crate::error::AppError::Internal(format!("sessions lock: {e}")))?;

@@ -9,7 +9,7 @@ use std::sync::{Mutex, OnceLock};
 use super::types::SessionId;
 
 /// One snapshot of a session's resource budget.  Returned to the UI.
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Default, Serialize, Deserialize)]
 pub struct BudgetSnapshot {
     pub session_id_hash: u64,
     pub memory_used_bytes: u64,
@@ -23,23 +23,6 @@ pub struct BudgetSnapshot {
     pub cells_limit_exceeded: u64,
 }
 
-impl Default for BudgetSnapshot {
-    fn default() -> Self {
-        Self {
-            session_id_hash: 0,
-            memory_used_bytes: 0,
-            memory_peak_bytes: 0,
-            fuel_consumed: 0,
-            wall_time_ms_total: 0,
-            disk_bytes_written: 0,
-            cells_run: 0,
-            cells_succeeded: 0,
-            cells_failed: 0,
-            cells_limit_exceeded: 0,
-        }
-    }
-}
-
 /// Mutable budget for one session — backs the snapshot.
 #[derive(Debug, Default)]
 pub struct Budget {
@@ -49,8 +32,10 @@ pub struct Budget {
 
 impl Budget {
     pub fn new(session_id: String) -> Self {
-        let mut snap = BudgetSnapshot::default();
-        snap.session_id_hash = hash_session(&session_id);
+        let snap = BudgetSnapshot {
+            session_id_hash: hash_session(&session_id),
+            ..Default::default()
+        };
         Self {
             session_id,
             snapshot: snap,

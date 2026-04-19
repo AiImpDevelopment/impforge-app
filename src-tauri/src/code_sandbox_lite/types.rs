@@ -14,7 +14,7 @@
 //!   5. Trust Levels        — user consents per cell via `TrustLevel`
 //!   6. Merkle audit chain  — every cell execution is signed + logged
 //!   7. provenance chain    — every output is provenance-linked to the
-//!                            user's Knowledge Fabric (not ours)
+//!      user's Knowledge Fabric (not ours)
 //!
 //! No code ever leaves the user's machine.  No telemetry.  No LLM call
 //! routes through impforge.com.
@@ -69,21 +69,16 @@ impl Lang {
 ///
 /// User explicitly elevates per cell.  App defaults to Low; passing
 /// a preopen raises to Medium; Pro adds High via Trust Levels API.
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum TrustLevel {
     /// No network, no FS.  Default.
+    #[default]
     Low,
     /// Preopen a single directory read-only.
     Medium,
     /// Preopen writable + full sandbox + GPU (Pro only).
     High,
-}
-
-impl Default for TrustLevel {
-    fn default() -> Self {
-        Self::Low
-    }
 }
 
 // ───────────────────────────────────────────────────────────────────────────
@@ -248,7 +243,7 @@ pub enum OutputStream {
 // ───────────────────────────────────────────────────────────────────────────
 
 /// Post-run metrics — sent to the UI's ResourceMonitor.
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Default, Serialize, Deserialize)]
 pub struct ResourceUsage {
     pub memory_peak_bytes: u64,
     pub fuel_consumed: u64,
@@ -257,20 +252,6 @@ pub struct ResourceUsage {
     pub disk_bytes_written: u64,
     pub stdout_bytes: usize,
     pub stderr_bytes: usize,
-}
-
-impl Default for ResourceUsage {
-    fn default() -> Self {
-        Self {
-            memory_peak_bytes: 0,
-            fuel_consumed: 0,
-            wall_time_ms: 0,
-            cpu_time_ms: 0,
-            disk_bytes_written: 0,
-            stdout_bytes: 0,
-            stderr_bytes: 0,
-        }
-    }
 }
 
 // ───────────────────────────────────────────────────────────────────────────
