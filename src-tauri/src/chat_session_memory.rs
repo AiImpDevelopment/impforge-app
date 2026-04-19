@@ -208,4 +208,37 @@ mod tests {
         let msgs = s.get_messages(&ThreadId("missing".into()));
         assert!(msgs.is_empty());
     }
+
+    /// Frontend (`chat.svelte.ts`) treats `ThreadId` as a bare JSON string.
+    /// Pin the serde wire format so a future field addition cannot silently
+    /// break the Svelte UI.
+    #[test]
+    fn thread_id_serializes_as_bare_string() {
+        let id = ThreadId("uuid-abc-123".to_string());
+        let json = serde_json::to_string(&id).expect("serialize ThreadId");
+        assert_eq!(json, "\"uuid-abc-123\"");
+
+        // Round-trip: a bare string must deserialize back into a ThreadId.
+        let back: ThreadId = serde_json::from_str("\"uuid-abc-123\"").expect("deserialize ThreadId");
+        assert_eq!(back, id);
+    }
+
+    /// Snapshot serializes as an object with the documented shape used
+    /// by `chat.svelte.ts` thread listings.
+    #[test]
+    fn thread_snapshot_has_object_shape_for_ui() {
+        let mut s = SessionStore::new();
+        let _id = s.create_thread("UI Smoke".into());
+        let snaps = s.list_threads();
+        let json = serde_json::to_string(&snaps).expect("serialize snapshots");
+        let v: serde_json::Value = serde_json::from_str(&json).expect("parse JSON");
+        let arr = v.as_array().expect("array");
+        let obj = arr[0].as_object().expect("object");
+        assert!(obj.contains_key("id"));
+        assert!(obj.contains_key("title"));
+        assert!(obj.contains_key("created_at"));
+        assert!(obj.contains_key("message_count"));
+        // `id` itself must be a bare string, not a nested object.
+        assert!(obj["id"].is_string());
+    }
 }
