@@ -201,8 +201,8 @@ mod tests {
         // k=0 would otherwise divide by rank, k<0 would give negative
         // scores and break ordering.  Clamp to EPSILON.
         let r = vec!["a", "b"];
-        let merged_zero = fuse(&[r.clone()], 0.0);
-        let merged_neg = fuse(&[r.clone()], -10.0);
+        let merged_zero = fuse(std::slice::from_ref(&r), 0.0);
+        let merged_neg = fuse(std::slice::from_ref(&r), -10.0);
         let merged_eps = fuse(&[r], f64::EPSILON);
         assert_eq!(merged_zero[0].0, "a");
         assert_eq!(merged_neg[0].0, "a");
