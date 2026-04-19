@@ -1,0 +1,48 @@
+# SPDX-License-Identifier: MIT
+[package]
+name = "impforge-app"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+homepage.workspace = true
+repository.workspace = true
+description = "Open-source freemium Tauri+Svelte+Rust desktop app for local-first AI work."
+
+[lib]
+name = "impforge_app_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { workspace = true }
+
+[dependencies]
+tauri = { workspace = true }
+tauri-plugin-store = { workspace = true }
+tauri-plugin-updater = { workspace = true }
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+chrono = { workspace = true }
+uuid = { workspace = true }
+anyhow = { workspace = true }
+sqlx = { workspace = true }
+ollama-rs = { workspace = true }
+
+# impforge-cli workspace crates
+impforge-core = { workspace = true }
+impforge-models = { workspace = true }
+impforge-mcp-server = { workspace = true }
+impforge-emergence = { workspace = true }
+impforge-autonomy = { workspace = true }
+impforge-crown-jewel = { workspace = true }
+impforge-universal = { workspace = true }
+impforge-bench = { workspace = true }
+impforge-remote = { workspace = true }
+
+[dev-dependencies]
+tokio-test = "0.4"

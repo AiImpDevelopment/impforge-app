@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: MIT
+target/
+node_modules/
+.svelte-kit/
+build/
+dist/
+*.swp
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/settings.json

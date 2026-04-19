@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: MIT
+[package]
+name = "digiimp"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "DigiImp visual companion — Heartbeat Ribbon + 16x16 actor + opt-in WGSL deep-mode."
+
+[dependencies]
+# Phase 4 fill-in adds: wgpu, winit, rive-rs, bytemuck, glam, tauri-plugin-decorum
