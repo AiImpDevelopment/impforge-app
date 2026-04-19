@@ -1,0 +1,549 @@
+{
+  "$schema": "https://impforge.dev/schemas/design-system-v1.json",
+  "version": "1.0.0",
+  "name": "ImpForge Cyberpunk",
+  "description": "Machine-readable design system for ImpForge's retro-futuristic cyberpunk aesthetic. Opera GX DNA meets sci-fi command center. Readable by ai_imp, Claude Code, Cursor, and any AI tool.",
+
+  "identity": {
+    "aesthetic": "retro-futuristic-cyberpunk",
+    "inspiration": ["Opera GX", "Blade Runner 2049", "Ghost in the Shell", "Tron Legacy", "Star Citizen MobiGlas"],
+    "mood": "dark, electric, powerful, precise",
+    "tagline": "Your desktop becomes a sci-fi command center",
+    "not": ["generic dark mode", "flat corporate", "Material Design default", "generic Tailwind cards"]
+  },
+
+  "colors": {
+    "brand": {
+      "neon": { "value": "#00FF66", "description": "Primary neon green — THE ImpForge color", "usage": "CTAs, active states, key highlights" },
+      "neon_dim": { "value": "#00CC52", "description": "Dimmed neon for secondary elements", "usage": "Hover states, secondary actions" },
+      "neon_bright": { "value": "#33FF85", "description": "Bright variant for glows", "usage": "Glow effects, active indicators" },
+      "neon_glow": { "value": "rgba(0, 255, 102, 0.15)", "description": "Neon glow color at 15% opacity", "usage": "Box shadows, ambient lighting" }
+    },
+    "background": {
+      "void": { "value": "#08080D", "description": "Deepest black — outer space void", "usage": "Window backgrounds, app chrome" },
+      "primary": { "value": "#0D0D12", "description": "Primary surface — deep midnight", "usage": "Page backgrounds" },
+      "secondary": { "value": "#13131A", "description": "Elevated surface", "usage": "Cards, panels" },
+      "tertiary": { "value": "#1A1A24", "description": "Interactive surface", "usage": "Inputs, dropdowns, popovers" },
+      "elevated": { "value": "#1E1E2A", "description": "Highest elevation", "usage": "Modals, overlays" },
+      "hover": { "value": "#252532", "description": "Hover state surface", "usage": "Hovered cards, buttons" },
+      "glass": { "value": "rgba(19, 19, 26, 0.72)", "description": "Glassmorphism surface", "usage": "Floating panels, HyperChat, widgets" },
+      "glass_heavy": { "value": "rgba(13, 13, 18, 0.88)", "description": "Heavy glass for readability", "usage": "Tooltips, context menus" }
+    },
+    "accent": {
+      "cyan": { "value": "#00CCFF", "description": "Data, analytics, metrics", "usage": "Charts, stats, system info" },
+      "magenta": { "value": "#FF3399", "description": "AI, intelligence, neural", "usage": "AI status, cortex viz, thinking" },
+      "orange": { "value": "#FF8800", "description": "Warnings, attention", "usage": "Warnings, important badges" },
+      "purple": { "value": "#9966FF", "description": "Premium, special, rare", "usage": "Pro features, achievements" },
+      "blue": { "value": "#3366FF", "description": "Links, navigation", "usage": "Hyperlinks, breadcrumbs" },
+      "red": { "value": "#FF3366", "description": "Errors, destructive", "usage": "Delete actions, error states" },
+      "gold": { "value": "#FFD700", "description": "Achievement, reward", "usage": "XP, levels, streaks" }
+    },
+    "text": {
+      "primary": { "value": "#E8E8ED", "description": "Main body text", "contrast_on_bg": "14.2:1" },
+      "secondary": { "value": "#A0A0B0", "description": "Secondary text, labels", "contrast_on_bg": "8.1:1" },
+      "muted": { "value": "#606070", "description": "Placeholder, disabled", "contrast_on_bg": "3.8:1" },
+      "inverse": { "value": "#0D0D12", "description": "Text on bright backgrounds", "usage": "Text on neon buttons" }
+    },
+    "border": {
+      "default": { "value": "#2A2A3A", "description": "Standard card borders" },
+      "hover": { "value": "#3A3A4A", "description": "Hovered borders" },
+      "focus": { "value": "#00FF66", "description": "Focus ring — always neon" },
+      "subtle": { "value": "#1F1F2A", "description": "Very subtle dividers" },
+      "neon_pulse": { "value": "rgba(0, 255, 102, 0.3)", "description": "Animated border glow" }
+    },
+    "status": {
+      "success": "#00FF66",
+      "warning": "#FFB800",
+      "error": "#FF3366",
+      "info": "#3399FF",
+      "ai_thinking": "#FF3399",
+      "ai_ready": "#00FF66",
+      "ai_offline": "#606070"
+    },
+    "gradients": {
+      "mesh_primary": {
+        "type": "radial",
+        "stops": ["#0D0D12 0%", "#13131A 40%", "#0D1117 80%", "#0D0D12 100%"],
+        "description": "Primary page background gradient mesh"
+      },
+      "mesh_hero": {
+        "type": "conic",
+        "stops": ["#0D0D12 0deg", "#0D1A12 90deg", "#12101A 180deg", "#0D1117 270deg", "#0D0D12 360deg"],
+        "description": "Hero section with subtle color shifts — NOT flat black"
+      },
+      "neon_fade": {
+        "type": "linear",
+        "direction": "135deg",
+        "stops": ["rgba(0, 255, 102, 0.08) 0%", "transparent 60%"],
+        "description": "Subtle neon ambience wash"
+      },
+      "card_glow": {
+        "type": "linear",
+        "direction": "180deg",
+        "stops": ["rgba(0, 255, 102, 0.05) 0%", "transparent 100%"],
+        "description": "Top-edge neon glow on cards"
+      },
+      "glass_surface": {
+        "type": "linear",
+        "direction": "135deg",
+        "stops": ["rgba(255, 255, 255, 0.03) 0%", "rgba(255, 255, 255, 0.01) 100%"],
+        "description": "Glassmorphism surface highlight"
+      }
+    }
+  },
+
+  "typography": {
+    "fonts": {
+      "display": {
+        "family": "Space Grotesk Variable",
+        "fallback": "Space Grotesk, system-ui, sans-serif",
+        "usage": "Headlines, hero text, module titles, dashboard headings",
+        "weight_range": "300-700",
+        "character": "geometric, technical, futuristic"
+      },
+      "body": {
+        "family": "Inter Variable",
+        "fallback": "Inter, system-ui, sans-serif",
+        "usage": "Body text, paragraphs, descriptions, labels",
+        "weight_range": "100-900",
+        "character": "neutral, highly readable, professional"
+      },
+      "code": {
+        "family": "JetBrains Mono Variable",
+        "fallback": "JetBrains Mono, Fira Code, monospace",
+        "usage": "Code, stats, badges, data displays, terminal",
+        "weight_range": "100-800",
+        "character": "precise, technical, distinctive ligatures"
+      }
+    },
+    "scale": {
+      "hero": { "size": "3rem", "line_height": 1.1, "weight": 700, "font": "display", "tracking": "-0.025em" },
+      "h1": { "size": "2.25rem", "line_height": 1.2, "weight": 700, "font": "display", "tracking": "-0.02em" },
+      "h2": { "size": "1.75rem", "line_height": 1.25, "weight": 600, "font": "display", "tracking": "-0.015em" },
+      "h3": { "size": "1.375rem", "line_height": 1.3, "weight": 600, "font": "display", "tracking": "-0.01em" },
+      "h4": { "size": "1.125rem", "line_height": 1.35, "weight": 600, "font": "display" },
+      "body_lg": { "size": "1.0625rem", "line_height": 1.6, "weight": 400, "font": "body" },
+      "body": { "size": "0.9375rem", "line_height": 1.6, "weight": 400, "font": "body" },
+      "body_sm": { "size": "0.8125rem", "line_height": 1.5, "weight": 400, "font": "body" },
+      "caption": { "size": "0.75rem", "line_height": 1.4, "weight": 500, "font": "body" },
+      "stat": { "size": "2rem", "line_height": 1.1, "weight": 700, "font": "code", "tracking": "-0.02em" },
+      "badge": { "size": "0.6875rem", "line_height": 1.2, "weight": 600, "font": "code", "tracking": "0.05em", "transform": "uppercase" },
+      "code_block": { "size": "0.875rem", "line_height": 1.5, "weight": 400, "font": "code" }
+    },
+    "rules": {
+      "minimum_size": "12px",
+      "minimum_contrast_body": "4.5:1",
+      "minimum_contrast_large": "3:1",
+      "large_text_threshold": "18px",
+      "never_use": ["Arial", "Helvetica", "Times New Roman", "Comic Sans", "Roboto"],
+      "display_contexts": "Only Space Grotesk for headings, hero text, module titles",
+      "code_contexts": "Always JetBrains Mono for data, stats, code, terminal output"
+    }
+  },
+
+  "spacing": {
+    "scale": {
+      "0": "0px",
+      "px": "1px",
+      "0.5": "2px",
+      "1": "4px",
+      "1.5": "6px",
+      "2": "8px",
+      "2.5": "10px",
+      "3": "12px",
+      "4": "16px",
+      "5": "20px",
+      "6": "24px",
+      "8": "32px",
+      "10": "40px",
+      "12": "48px",
+      "16": "64px",
+      "20": "80px",
+      "24": "96px"
+    },
+    "component": {
+      "card_padding": "20px",
+      "card_gap": "16px",
+      "section_gap": "32px",
+      "page_padding": "24px",
+      "page_max_width": "1440px",
+      "input_padding_x": "12px",
+      "input_padding_y": "8px",
+      "button_padding_x": "16px",
+      "button_padding_y": "10px",
+      "badge_padding_x": "8px",
+      "badge_padding_y": "4px"
+    },
+    "layout": {
+      "sidebar_width": "280px",
+      "hyperchat_width": "380px",
+      "hyperchat_min_height": "480px",
+      "widget_min_width": "200px",
+      "widget_min_height": "150px",
+      "grid_gap": "16px",
+      "bento_gap": "12px"
+    }
+  },
+
+  "radius": {
+    "none": "0px",
+    "sm": "4px",
+    "md": "6px",
+    "lg": "10px",
+    "xl": "14px",
+    "2xl": "18px",
+    "full": "9999px",
+    "component": {
+      "card": "10px",
+      "button": "6px",
+      "input": "6px",
+      "badge": "4px",
+      "modal": "14px",
+      "tooltip": "6px",
+      "widget": "12px",
+      "avatar": "9999px"
+    }
+  },
+
+  "motion": {
+    "durations": {
+      "instant": "0ms",
+      "fast": "100ms",
+      "normal": "200ms",
+      "smooth": "300ms",
+      "slow": "500ms",
+      "dramatic": "800ms",
+      "stagger_base": "50ms",
+      "page_enter": "600ms",
+      "hero_reveal": "1000ms"
+    },
+    "easings": {
+      "default": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "in": "cubic-bezier(0.4, 0, 1, 1)",
+      "out": "cubic-bezier(0, 0, 0.2, 1)",
+      "in_out": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "spring": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+      "bounce": "cubic-bezier(0.68, -0.55, 0.27, 1.55)",
+      "neon_pulse": "cubic-bezier(0.4, 0, 0.6, 1)"
+    },
+    "animations": {
+      "card_enter": {
+        "keyframes": "translateY(20px) opacity(0) → translateY(0) opacity(1)",
+        "duration": "400ms",
+        "easing": "spring",
+        "stagger": "60ms",
+        "description": "Cards slide up and fade in, staggered"
+      },
+      "glow_pulse": {
+        "keyframes": "boxShadow(glow_sm) → boxShadow(glow_lg) → boxShadow(glow_sm)",
+        "duration": "3000ms",
+        "easing": "neon_pulse",
+        "iteration": "infinite",
+        "description": "Subtle neon glow breathing on active elements"
+      },
+      "hover_lift": {
+        "keyframes": "translateY(0) scale(1) → translateY(-2px) scale(1.01)",
+        "duration": "200ms",
+        "easing": "out",
+        "description": "Cards lift slightly on hover"
+      },
+      "neon_border_sweep": {
+        "keyframes": "borderColor sweeps clockwise from top-left",
+        "duration": "2000ms",
+        "easing": "linear",
+        "iteration": "infinite",
+        "description": "Neon border animation for active/focused cards"
+      },
+      "page_transition": {
+        "exit": "opacity(1) scale(1) → opacity(0) scale(0.98)",
+        "enter": "opacity(0) scale(1.02) → opacity(1) scale(1)",
+        "duration": "250ms",
+        "easing": "in_out"
+      },
+      "typing_indicator": {
+        "keyframes": "3 dots with staggered opacity pulse",
+        "duration": "1400ms",
+        "easing": "in_out",
+        "iteration": "infinite",
+        "description": "ai_imp thinking/typing animation"
+      },
+      "gradient_mesh_shift": {
+        "keyframes": "background-position slow drift",
+        "duration": "20000ms",
+        "easing": "linear",
+        "iteration": "infinite",
+        "description": "Living gradient mesh background — NOT static"
+      }
+    },
+    "rules": {
+      "always_stagger_lists": true,
+      "stagger_delay_per_item": "60ms",
+      "max_stagger_items": 12,
+      "prefer_transform_over_layout": true,
+      "reduce_motion_respect": true,
+      "hover_requires_transition": true,
+      "no_animation_duration_over": "1200ms",
+      "exception_ambient": "Ambient animations (glow_pulse, gradient_mesh) can exceed 1200ms"
+    }
+  },
+
+  "effects": {
+    "shadows": {
+      "sm": "0 1px 3px rgba(0, 0, 0, 0.4)",
+      "md": "0 4px 12px rgba(0, 0, 0, 0.5)",
+      "lg": "0 8px 32px rgba(0, 0, 0, 0.6)",
+      "xl": "0 16px 48px rgba(0, 0, 0, 0.7)",
+      "neon_sm": "0 0 8px rgba(0, 255, 102, 0.15)",
+      "neon_md": "0 0 16px rgba(0, 255, 102, 0.2)",
+      "neon_lg": "0 0 32px rgba(0, 255, 102, 0.25)",
+      "neon_glow": "0 0 40px rgba(0, 255, 102, 0.3), 0 0 80px rgba(0, 255, 102, 0.1)",
+      "neon_cyan": "0 0 16px rgba(0, 204, 255, 0.2)",
+      "neon_magenta": "0 0 16px rgba(255, 51, 153, 0.2)",
+      "inner_glow": "inset 0 1px 0 rgba(255, 255, 255, 0.05)"
+    },
+    "glassmorphism": {
+      "blur": "16px",
+      "saturation": "120%",
+      "bg_opacity": 0.72,
+      "border": "1px solid rgba(255, 255, 255, 0.06)",
+      "css": "backdrop-filter: blur(16px) saturate(120%); -webkit-backdrop-filter: blur(16px) saturate(120%);",
+      "description": "Frosted glass effect for floating panels, HyperChat, tooltips"
+    },
+    "noise_texture": {
+      "opacity": 0.03,
+      "blend_mode": "overlay",
+      "description": "Subtle grain overlay for depth — prevents flat digital look",
+      "css": "background-image: url('data:image/svg+xml,...'); opacity: 0.03; mix-blend-mode: overlay; pointer-events: none;"
+    },
+    "scanlines": {
+      "opacity": 0.02,
+      "line_height": "2px",
+      "gap": "4px",
+      "description": "Optional CRT scanline overlay for retro-futuristic feel"
+    },
+    "border_glow": {
+      "active": "0 0 0 1px rgba(0, 255, 102, 0.3), 0 0 16px rgba(0, 255, 102, 0.1)",
+      "hover": "0 0 0 1px rgba(0, 255, 102, 0.15), 0 0 8px rgba(0, 255, 102, 0.05)",
+      "focus": "0 0 0 2px #00FF66, 0 0 16px rgba(0, 255, 102, 0.2)"
+    }
+  },
+
+  "components": {
+    "card": {
+      "bg": "var(--color-gx-bg-secondary)",
+      "border": "1px solid var(--color-gx-border-default)",
+      "radius": "10px",
+      "padding": "20px",
+      "shadow": "none",
+      "hover": {
+        "border": "1px solid var(--color-gx-border-hover)",
+        "shadow": "0 0 16px rgba(0, 255, 102, 0.08)",
+        "transform": "translateY(-2px)",
+        "transition": "all 200ms cubic-bezier(0, 0, 0.2, 1)"
+      },
+      "variants": {
+        "glass": { "bg": "rgba(19, 19, 26, 0.72)", "backdrop_filter": "blur(16px) saturate(120%)", "border": "1px solid rgba(255, 255, 255, 0.06)" },
+        "glow": { "shadow": "0 0 32px rgba(0, 255, 102, 0.15)", "border": "1px solid rgba(0, 255, 102, 0.2)" },
+        "bento": { "radius": "14px", "padding": "24px", "aspect_ratio": "auto" },
+        "stat": { "text_align": "center", "padding": "24px 16px" }
+      }
+    },
+    "button": {
+      "primary": {
+        "bg": "#00FF66",
+        "text": "#0D0D12",
+        "font_weight": 600,
+        "radius": "6px",
+        "padding": "10px 16px",
+        "shadow": "0 0 16px rgba(0, 255, 102, 0.2)",
+        "hover": { "bg": "#33FF85", "shadow": "0 0 24px rgba(0, 255, 102, 0.3)" }
+      },
+      "secondary": {
+        "bg": "transparent",
+        "text": "#E8E8ED",
+        "border": "1px solid var(--color-gx-border-default)",
+        "hover": { "border": "1px solid var(--color-gx-neon)", "text": "#00FF66" }
+      },
+      "ghost": {
+        "bg": "transparent",
+        "text": "#A0A0B0",
+        "hover": { "bg": "rgba(255, 255, 255, 0.05)", "text": "#E8E8ED" }
+      },
+      "danger": {
+        "bg": "transparent",
+        "text": "#FF3366",
+        "border": "1px solid rgba(255, 51, 102, 0.3)",
+        "hover": { "bg": "rgba(255, 51, 102, 0.1)" }
+      }
+    },
+    "input": {
+      "bg": "var(--color-gx-bg-tertiary)",
+      "border": "1px solid var(--color-gx-border-default)",
+      "text": "var(--color-gx-text-primary)",
+      "placeholder": "var(--color-gx-text-muted)",
+      "radius": "6px",
+      "padding": "8px 12px",
+      "focus": { "border": "1px solid #00FF66", "shadow": "0 0 0 2px rgba(0, 255, 102, 0.15)" }
+    },
+    "badge": {
+      "font": "code",
+      "size": "0.6875rem",
+      "padding": "4px 8px",
+      "radius": "4px",
+      "weight": 600,
+      "tracking": "0.05em",
+      "transform": "uppercase",
+      "variants": {
+        "success": { "bg": "rgba(0, 255, 102, 0.1)", "text": "#00FF66", "border": "1px solid rgba(0, 255, 102, 0.2)" },
+        "warning": { "bg": "rgba(255, 184, 0, 0.1)", "text": "#FFB800", "border": "1px solid rgba(255, 184, 0, 0.2)" },
+        "error": { "bg": "rgba(255, 51, 102, 0.1)", "text": "#FF3366", "border": "1px solid rgba(255, 51, 102, 0.2)" },
+        "info": { "bg": "rgba(51, 153, 255, 0.1)", "text": "#3399FF", "border": "1px solid rgba(51, 153, 255, 0.2)" },
+        "ai": { "bg": "rgba(255, 51, 153, 0.1)", "text": "#FF3399", "border": "1px solid rgba(255, 51, 153, 0.2)" },
+        "premium": { "bg": "rgba(153, 102, 255, 0.1)", "text": "#9966FF", "border": "1px solid rgba(153, 102, 255, 0.2)" }
+      }
+    },
+    "tooltip": {
+      "bg": "rgba(13, 13, 18, 0.92)",
+      "text": "#E8E8ED",
+      "border": "1px solid var(--color-gx-border-default)",
+      "radius": "6px",
+      "padding": "6px 10px",
+      "font_size": "0.8125rem",
+      "backdrop_filter": "blur(12px)",
+      "max_width": "280px",
+      "shadow": "0 4px 12px rgba(0, 0, 0, 0.5)"
+    },
+    "circular_gauge": {
+      "size": "120px",
+      "stroke_width": "8px",
+      "track_color": "rgba(255, 255, 255, 0.05)",
+      "fill_color": "#00FF66",
+      "label_font": "code",
+      "label_size": "1.5rem",
+      "description": "Use instead of progress bars for system stats — more visually interesting"
+    },
+    "ai_bubble": {
+      "bg": "rgba(19, 19, 26, 0.85)",
+      "border": "1px solid rgba(0, 255, 102, 0.15)",
+      "radius": "14px",
+      "padding": "16px 20px",
+      "max_width": "480px",
+      "backdrop_filter": "blur(16px) saturate(120%)",
+      "shadow": "0 0 24px rgba(0, 255, 102, 0.08)",
+      "avatar_glow": "0 0 16px rgba(0, 255, 102, 0.3)",
+      "description": "ai_imp's chat bubble — distinctive glass with neon accent"
+    }
+  },
+
+  "layout": {
+    "patterns": {
+      "bento_grid": {
+        "description": "Asymmetric grid layout — NOT uniform 3x3. Mixed sizes create visual hierarchy.",
+        "columns": "repeat(auto-fill, minmax(200px, 1fr))",
+        "some_items_span_2_columns": true,
+        "hero_item_spans_full_width": true,
+        "gap": "12px"
+      },
+      "command_center": {
+        "description": "Central viewport with docked panels on edges. HyperChat floats.",
+        "regions": ["top-bar", "left-panel", "main-viewport", "right-panel", "bottom-status"]
+      },
+      "floating_window": {
+        "description": "Each module as an independent floating window. Frameless, resizable, always-on-top optional.",
+        "min_width": "200px",
+        "min_height": "150px",
+        "title_bar_height": "32px",
+        "border": "1px solid var(--color-gx-border-default)",
+        "radius": "12px"
+      }
+    },
+    "breakpoints": {
+      "sm": "640px",
+      "md": "768px",
+      "lg": "1024px",
+      "xl": "1280px",
+      "2xl": "1536px",
+      "ultrawide": "2560px",
+      "super_ultrawide": "3440px"
+    },
+    "rules": {
+      "never_uniform_grid": "Avoid identical-size cards in a uniform grid — use bento/asymmetric",
+      "hero_section_full_width": "Dashboard hero always spans full width with gradient mesh",
+      "visual_hierarchy": "Largest element = most important. Size communicates priority.",
+      "negative_space": "Generous spacing between sections (32px+). Crowded UI = confusing UI.",
+      "asymmetry_over_symmetry": "Slight asymmetry creates visual interest. Perfect symmetry = boring."
+    }
+  },
+
+  "accessibility": {
+    "contrast": {
+      "minimum_body_text": "4.5:1",
+      "minimum_large_text": "3:1",
+      "minimum_ui_components": "3:1",
+      "large_text_threshold_px": 18,
+      "large_bold_text_threshold_px": 14,
+      "enhanced_body_text": "7:1",
+      "enhanced_large_text": "4.5:1"
+    },
+    "focus": {
+      "indicator": "2px solid #00FF66",
+      "offset": "2px",
+      "visible_on_keyboard_only": true,
+      "never_remove_focus_styles": true
+    },
+    "motion": {
+      "respect_prefers_reduced_motion": true,
+      "fallback": "Disable all animations, use instant transitions"
+    },
+    "font": {
+      "minimum_size_px": 12,
+      "minimum_line_height": 1.4,
+      "maximum_line_length_ch": 75
+    }
+  },
+
+  "ai_rules": {
+    "description": "Rules for AI tools (ai_imp, Claude Code, Cursor) when modifying ImpForge UI",
+    "always": [
+      "Use design-system.json tokens — NEVER hardcode colors or font sizes",
+      "Every interactive element MUST have hover + focus states",
+      "Cards MUST have entry animation (card_enter with stagger)",
+      "Use Space Grotesk for headings, Inter for body, JetBrains Mono for data",
+      "Background MUST use gradient mesh — NEVER flat solid color",
+      "Stats MUST use circular gauges — NEVER plain progress bars",
+      "Glass effect (backdrop-blur) for floating/overlay elements",
+      "Minimum 12px font size, 4.5:1 contrast ratio for body text",
+      "Neon green (#00FF66) is the ONLY primary accent — don't compete with it",
+      "Use semantic accent colors: cyan=data, magenta=AI, orange=warning, purple=premium"
+    ],
+    "never": [
+      "Never use flat black (#000000) background — use void (#08080D) or primary (#0D0D12)",
+      "Never use generic fonts (Arial, Helvetica, Roboto, system-ui alone)",
+      "Never create identical-size cards in a uniform grid — use bento/asymmetric layout",
+      "Never remove hover/focus transitions from interactive elements",
+      "Never use raw HTML colors — always reference design system tokens",
+      "Never skip entry animations on page content",
+      "Never use > 1200ms duration for non-ambient animations",
+      "Never create components without dark mode consideration — this IS a dark mode app"
+    ],
+    "when_creating_new_component": [
+      "1. Check if a similar component exists in design-system.json",
+      "2. Use existing tokens for colors, spacing, typography",
+      "3. Add hover state with glow intensification",
+      "4. Add entry animation (fade + slide up, staggered if in list)",
+      "5. Ensure WCAG AA contrast ratios",
+      "6. Test at 3440x1440 resolution (ultrawide)",
+      "7. Add glass variant if component can float/overlay"
+    ],
+    "when_reviewing_ui": [
+      "1. Run contrast ratio check on all text/background pairs",
+      "2. Verify minimum 12px font size everywhere",
+      "3. Check that interactive elements have hover + focus states",
+      "4. Verify gradient mesh background (not flat black)",
+      "5. Check animation stagger on lists/grids",
+      "6. Verify correct font family per context (display/body/code)",
+      "7. Check spacing consistency (use scale multiples)",
+      "8. Verify glassmorphism on floating elements"
+    ]
+  }
+}
