@@ -13,6 +13,7 @@ pub mod eu_ai_act_full;
 pub mod hyperchat_lite;
 pub mod knowledge_lite;
 pub mod memory_lite;
+pub mod pii_scrubber;
 pub mod slash_commands;
 pub mod wikipedia_fetch;
 
@@ -72,6 +73,8 @@ pub fn run() {
             eu_ai_act_full::eu_ai_classify_risk,
             eu_ai_act_full::eu_ai_log_decision,
             eu_ai_act_full::eu_ai_export_report,
+            pii_scrubber::pii_detect,
+            pii_scrubber::pii_scrub,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
