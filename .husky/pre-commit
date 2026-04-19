@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
+set -e
+
+echo "Crown-Jewel pre-commit checks..."
+
+# Dim 1-5+8: cargo check (zero errors), cargo check --tests (zero warnings)
+if [ -f Cargo.toml ]; then
+  echo "  -> cargo check..."
+  cargo check --all-targets --workspace 2>&1 | tee /tmp/impforge-cargo-check.log
+  if grep -qE "warning:|error:" /tmp/impforge-cargo-check.log; then
+    echo "ERROR: cargo check has warnings or errors. Crown-Jewel requires 0/0."
+    exit 1
+  fi
+fi
+
+# Dim 9: no Pro-source leak
+echo "  -> CJ Dim-9: no Pro-source leak..."
+./scripts/cj-dim9-no-pro-leak.sh
+
+# SPDX header check
+echo "  -> SPDX MIT header check..."
+./scripts/check-spdx.sh
+
+# Frontend type check (if frontend changes)
+if git diff --cached --name-only | grep -qE '\.(ts|svelte|js)$'; then
+  echo "  -> svelte-check..."
+  pnpm check
+fi
+
+echo "Crown-Jewel checks passed."
